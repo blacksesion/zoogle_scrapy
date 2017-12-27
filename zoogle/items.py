@@ -96,6 +96,7 @@ class ChileautosItem(Item):
     # especificaciones - detalles
     tipo_vehiculo_det = Field()
     tipo_categoria_det = Field()
+    version_det = Field()
 
     # especificaciones - dimensiones
     dim_ext = Field()

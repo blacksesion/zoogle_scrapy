@@ -92,5 +92,11 @@ class ChileautosSpider(scrapy.Spider):
                                                                                      'utf-8') + '"]/td/text()').extract()).strip()
                 anuncio['ciudad_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
+
+                nodo = field.xpath('//div[@id="tab-content--specifications"]/node()').extract()
+                anuncio['version_det'] = ''.join(nodo.xpath(
+                    '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()').extract()).strip()
+                # anuncio['version_det'] = ''.join(field.xpath(
+                #     '//div[@id="tab-content--specifications"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
                 # print field.xpath('//div[@id="tab-content--basic"]/table/tr/node()').extract()
         yield anuncio
