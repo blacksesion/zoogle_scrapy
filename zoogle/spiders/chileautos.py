@@ -42,11 +42,6 @@ class ChileautosSpider(scrapy.Spider):
             anuncio['vendido'] = self.utc_date
         else:
             for field in fields:
-                # title = field.xpath("ol/h1/text()").extract()
-                # title = field.xpath("h1/text()").extract()
-                # title = field.xpath("//h1[@class='page-header']/text()").extract()
-                # title = field.xpath("//h1[@class='page-header']/text()").extract()
-                # title = field.xpath("//h1[@class='key-features__price hidden-xs']/text()").extract()
                 '''
                 Carga de datos generales
                 '''
