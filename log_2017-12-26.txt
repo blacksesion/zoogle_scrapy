@@ -1,0 +1,142 @@
+2017-12-26 21:59:20-0300 [scrapy] INFO: Scrapy 0.24.6 started (bot: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1)
+2017-12-26 21:59:20-0300 [scrapy] INFO: Optional features available: ssl, http11, boto
+2017-12-26 21:59:20-0300 [scrapy] INFO: Overridden settings: {'NEWSPIDER_MODULE': 'zoogle.spiders', 'SPIDER_MODULES': ['zoogle.spiders'], 'LOG_FILE': 'log_2017-12-26.txt', 'BOT_NAME': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'}
+2017-12-26 21:59:22-0300 [scrapy] INFO: Enabled extensions: LogStats, TelnetConsole, CloseSpider, WebService, CoreStats, SpiderState
+2017-12-26 21:59:24-0300 [scrapy] INFO: Enabled downloader middlewares: HttpAuthMiddleware, DownloadTimeoutMiddleware, UserAgentMiddleware, RetryMiddleware, DefaultHeadersMiddleware, MetaRefreshMiddleware, HttpCompressionMiddleware, RedirectMiddleware, CookiesMiddleware, ChunkedTransferMiddleware, DownloaderStats
+2017-12-26 21:59:24-0300 [scrapy] INFO: Enabled spider middlewares: HttpErrorMiddleware, OffsiteMiddleware, RefererMiddleware, UrlLengthMiddleware, DepthMiddleware
+2017-12-26 21:59:24-0300 [scrapy] INFO: Enabled item pipelines: SolrPipeline
+2017-12-26 21:59:24-0300 [chileautos] INFO: Spider opened
+2017-12-26 21:59:24-0300 [chileautos] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2017-12-26 21:59:24-0300 [scrapy] DEBUG: Telnet console listening on 127.0.0.1:6023
+2017-12-26 21:59:24-0300 [scrapy] DEBUG: Web service listening on 127.0.0.1:6080
+2017-12-26 21:59:25-0300 [chileautos] DEBUG: Crawled (200) <GET https://www.chileautos.cl/auto/usado/details/CL-AD-6486832> (referer: None)
+2017-12-26 21:59:25-0300 [chileautos] ERROR: Error processing {'carroceria': u'Furg\xf3n',
+	 'categoria': u'Autos, camionetas y 4x4',
+	 'ciudad_d': u'Santiago',
+	 'color_exterior_d': '',
+	 'combustible_d': u'Bencina',
+	 'comentarios': u'Impecable. Unico due\xf1o. La vendo por espacio.',
+	 'consumo_d': u'km/l',
+	 'header_nombre': u'2015 Chevrolet N 300 n300',
+	 'kilometros': u'8300 Km',
+	 'kilometros_d': u'8.300 kms',
+	 'pasajeros_d': '',
+	 'precio': u'$ 4.500.000',
+	 'precio_d': u'$ 4.500.000',
+	 'puertas_d': u'5',
+	 'region': u'Metropolitana de Santiago',
+	 'region_d': u'Metropolitana de Santiago',
+	 'transmision_d': u'manual',
+	 'vehiculo_d': u'2015 Chevrolet N 300 n300'}
+	Traceback (most recent call last):
+	  File "c:\python27\lib\site-packages\scrapy\middleware.py", line 62, in _process_chain
+	    return process_chain(self.methods[methodname], obj, *args)
+	  File "c:\python27\lib\site-packages\scrapy\utils\defer.py", line 65, in process_chain
+	    d.callback(input)
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 393, in callback
+	    self._startRunCallbacks(result)
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 501, in _startRunCallbacks
+	    self._runCallbacks()
+	--- <exception caught here> ---
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 588, in _runCallbacks
+	    current.result = callback(current.result, *args, **kw)
+	  File "C:\Users\blacksesion\Documents\trabajos inspira2\_ZOOGLE\scrapy\zoogle\zoogle\pipelines.py", line 68, in process_item
+	    if not (check_call(command_str_post, shell=True)):
+	  File "c:\python27\lib\subprocess.py", line 541, in check_call
+	    raise CalledProcessError(retcode, cmd)
+	subprocess.CalledProcessError: Command 'curl "http://localhost:8983/solr/zoogle/update?commit=true" --data-binary @chileautos_2017-12-26_1.json -H "Content-type:application/json"' returned non-zero exit status 1
+	
+2017-12-26 21:59:25-0300 [chileautos] DEBUG: Crawled (200) <GET https://www.chileautos.cl/auto/usado/details/CL-AD-6486831> (referer: None)
+2017-12-26 21:59:26-0300 [chileautos] ERROR: Error processing {'carroceria': u'Sed\xe1n',
+	 'categoria': u'Autos, camionetas y 4x4',
+	 'ciudad_d': u'Santiago',
+	 'color_exterior_d': '',
+	 'combustible_d': u'Otros',
+	 'comentarios': u'Esta para restaurar,m\xe1s cl\xe1sicos parabrisas papeles motores capot tapabarros molduras ros tapas ruedas',
+	 'consumo_d': u'km/l',
+	 'header_nombre': u'1955 Chevrolet coupe coupe',
+	 'kilometros': '',
+	 'kilometros_d': '',
+	 'pasajeros_d': '',
+	 'precio': u'$ 3.500.000',
+	 'precio_d': u'$ 3.500.000',
+	 'puertas_d': u'2',
+	 'region': u'Metropolitana de Santiago',
+	 'region_d': u'Metropolitana de Santiago',
+	 'transmision_d': u'manual',
+	 'vehiculo_d': u'1955 Chevrolet coupe coupe'}
+	Traceback (most recent call last):
+	  File "c:\python27\lib\site-packages\scrapy\middleware.py", line 62, in _process_chain
+	    return process_chain(self.methods[methodname], obj, *args)
+	  File "c:\python27\lib\site-packages\scrapy\utils\defer.py", line 65, in process_chain
+	    d.callback(input)
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 393, in callback
+	    self._startRunCallbacks(result)
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 501, in _startRunCallbacks
+	    self._runCallbacks()
+	--- <exception caught here> ---
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 588, in _runCallbacks
+	    current.result = callback(current.result, *args, **kw)
+	  File "C:\Users\blacksesion\Documents\trabajos inspira2\_ZOOGLE\scrapy\zoogle\zoogle\pipelines.py", line 68, in process_item
+	    if not (check_call(command_str_post, shell=True)):
+	  File "c:\python27\lib\subprocess.py", line 541, in check_call
+	    raise CalledProcessError(retcode, cmd)
+	subprocess.CalledProcessError: Command 'curl "http://localhost:8983/solr/zoogle/update?commit=true" --data-binary @chileautos_2017-12-26_2.json -H "Content-type:application/json"' returned non-zero exit status 1
+	
+2017-12-26 21:59:26-0300 [chileautos] DEBUG: Crawled (200) <GET https://www.chileautos.cl/auto/usado/details/CL-AD-6486830> (referer: None)
+2017-12-26 21:59:27-0300 [chileautos] ERROR: Error processing {'carroceria': u'SUV',
+	 'categoria': u'Autos, camionetas y 4x4',
+	 'ciudad_d': u'Santiago',
+	 'color_exterior_d': u'PLATA',
+	 'combustible_d': u'Bencina',
+	 'comentarios': u'SIN PARTES NI MULTAS DE TAG, EXCELENTE ESTADO. CONSULTE POR FINANCIAMIENTO, DE 12 A 48 MESES Y RECIBIMOS SU VEH\xcdCULO EN PARTE DE PAGO. CONSULTA POR DISPONIBILIDAD, CR\xc9DITO Y AGENDAMIENTO DE VISITAS, PREGUNTAR POR MARCO PEREZ / CEL. +569 9293 1471.',
+	 'consumo_d': u'km/l',
+	 'header_nombre': u'2011 Kia SPORTAGE 2.0 6AT 4WD FULL CUERO SUNROOF',
+	 'kilometros': u'112000 Km',
+	 'kilometros_d': u'112.000 kms',
+	 'pasajeros_d': '',
+	 'precio': u'$ 8.990.000',
+	 'precio_d': u'$ 8.990.000',
+	 'puertas_d': u'5',
+	 'region': u'Metropolitana de Santiago',
+	 'region_d': u'Metropolitana de Santiago',
+	 'transmision_d': u'autom\xe1tico',
+	 'vehiculo_d': u'2011 Kia SPORTAGE 2.0 6AT 4WD FULL CUERO SUNROOF'}
+	Traceback (most recent call last):
+	  File "c:\python27\lib\site-packages\scrapy\middleware.py", line 62, in _process_chain
+	    return process_chain(self.methods[methodname], obj, *args)
+	  File "c:\python27\lib\site-packages\scrapy\utils\defer.py", line 65, in process_chain
+	    d.callback(input)
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 393, in callback
+	    self._startRunCallbacks(result)
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 501, in _startRunCallbacks
+	    self._runCallbacks()
+	--- <exception caught here> ---
+	  File "c:\python27\lib\site-packages\twisted\internet\defer.py", line 588, in _runCallbacks
+	    current.result = callback(current.result, *args, **kw)
+	  File "C:\Users\blacksesion\Documents\trabajos inspira2\_ZOOGLE\scrapy\zoogle\zoogle\pipelines.py", line 68, in process_item
+	    if not (check_call(command_str_post, shell=True)):
+	  File "c:\python27\lib\subprocess.py", line 541, in check_call
+	    raise CalledProcessError(retcode, cmd)
+	subprocess.CalledProcessError: Command 'curl "http://localhost:8983/solr/zoogle/update?commit=true" --data-binary @chileautos_2017-12-26_3.json -H "Content-type:application/json"' returned non-zero exit status 1
+	
+2017-12-26 21:59:27-0300 [chileautos] INFO: Closing spider (finished)
+2017-12-26 21:59:27-0300 [chileautos] INFO: Dumping Scrapy stats:
+	{'downloader/request_bytes': 744,
+	 'downloader/request_count': 3,
+	 'downloader/request_method_count/GET': 3,
+	 'downloader/response_bytes': 75786,
+	 'downloader/response_count': 3,
+	 'downloader/response_status_count/200': 3,
+	 'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2017, 12, 27, 0, 59, 27, 349000),
+	 'log_count/DEBUG': 5,
+	 'log_count/ERROR': 3,
+	 'log_count/INFO': 7,
+	 'response_received_count': 3,
+	 'scheduler/dequeued': 3,
+	 'scheduler/dequeued/memory': 3,
+	 'scheduler/enqueued': 3,
+	 'scheduler/enqueued/memory': 3,
+	 'start_time': datetime.datetime(2017, 12, 27, 0, 59, 24, 250000)}
+2017-12-26 21:59:27-0300 [chileautos] INFO: Spider closed (finished)
