@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import scrapy
+import datetime
 from zoogle.items import ChileautosItem
 
 reload(sys)
@@ -13,6 +14,8 @@ class ChileautosSpider(scrapy.Spider):
     base_url = "https://www.chileautos.cl/auto/usado/details/CL-AD-%s"
     notes_number = 5
     start_id = 6486824
+    date = str(datetime.date.today())
+    utc_date = date + 'T03:00:00Z'
 
     # start_urls = ('http://www.chileautos.cl/',)
 
@@ -30,10 +33,13 @@ class ChileautosSpider(scrapy.Spider):
 
         # fields = hxs.xpath("//h1[@class='page-header']")
         fields = hxs.xpath("//div[@class='l-content__details-main col-xs-12 col-sm-8']")
+
+        anuncio = ChileautosItem()
         if not fields:
-            print "vendido"
+            url = response.url
+            anuncio['id'] = url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
+            anuncio['url'] = response.url
         else:
-            anuncio = ChileautosItem()
             for field in fields:
                 # title = field.xpath("ol/h1/text()").extract()
                 # title = field.xpath("h1/text()").extract()
@@ -47,6 +53,9 @@ class ChileautosSpider(scrapy.Spider):
                 anuncio['id'] = url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
                 anuncio['url'] = response.url
                 anuncio['header_nombre'] = ''.join(field.xpath('h1/text()').extract()).strip()
+                anuncio['fecha_creacion'] = self.utc_date
+                anuncio['fecha_publicacion'] = ''.join(
+                    field.xpath('//div[@class="published-date"]/span/text()').extract()).strip()
                 anuncio['precio'] = ''.join(
                     field.xpath('//h3[@class="key-features__price hidden-xs"]/text()').extract()).strip()
                 anuncio['kilometros'] = ''.join(field.xpath(
@@ -88,9 +97,4 @@ class ChileautosSpider(scrapy.Spider):
                 anuncio['ciudad_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
                 # print field.xpath('//div[@id="tab-content--basic"]/table/tr/node()').extract()
-
-            #print anuncio
-            yield anuncio
-
-        # print fields
-        # pass
+        yield anuncio

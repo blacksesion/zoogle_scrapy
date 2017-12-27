@@ -19,6 +19,10 @@ class ChileautosItem(Item):
     transmision = Field()
     region = Field()
     comentarios = Field()
+    vendido = Field()
+    fecha_publicacion = Field()
+    fecha_creacion = Field()
+    fecha_edicion = Field()
 
     # detalles destacados
     vehiculo_det = Field()
