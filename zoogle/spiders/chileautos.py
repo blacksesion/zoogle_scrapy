@@ -7,16 +7,9 @@ import demjson as demjson
 import scrapy
 import datetime
 from zoogle.items import ChileautosItem
-import logging
-from scrapy.log import ScrapyFileLogObserver
-
-logfile = open('log_' + str(datetime.date.today())+'.txt', 'w')
-log_observer = ScrapyFileLogObserver(logfile, level=logging.DEBUG)
-log_observer.start()
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
 
 class ChileautosSpider(scrapy.Spider):
     name = "chileautos"
