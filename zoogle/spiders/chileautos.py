@@ -15,12 +15,10 @@ class ChileautosSpider(scrapy.Spider):
     name = "chileautos"
     allowed_domains = ["www.chileautos.cl"]
     base_url = "https://www.chileautos.cl/auto/usado/details/CL-AD-%s"
-    notes_number = 1
+    notes_number = 5
     start_id = 6555929
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
-
-    # start_urls = ('http://www.chileautos.cl/',)
 
     def __init__(self, init_id=None, deep=None, *args, **kwargs):
         super(ChileautosSpider, self).__init__(*args, **kwargs)
@@ -33,8 +31,6 @@ class ChileautosSpider(scrapy.Spider):
 
     def parse(self, response):
         hxs = scrapy.Selector(response)
-
-        # fields = hxs.xpath("//h1[@class='page-header']")
         fields = hxs.xpath("//div[@class='l-content__details-main col-xs-12 col-sm-8']")
 
         anuncio = ChileautosItem()
@@ -96,16 +92,13 @@ class ChileautosSpider(scrapy.Spider):
                 anuncio['ciudad_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
                 anuncio['version_det'] = ''.join(field.xpath(
-                    # '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()').extract()).strip()
                     '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()[1]').extract()).strip()
-                # print field.xpath('//div[@id="tab-content--basic"]/table/tr/node()').extract()
 
                 pattern = re.compile(r'((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', re.MULTILINE | re.DOTALL)
                 data = field.xpath('//script[contains(., "fbq(\'track\', \'INFORMATION\',")]/text()').re(pattern)[0]
                 py_obj = demjson.decode(data)
                 data_obj = json.dumps(py_obj)
                 decoded = json.loads(data_obj)
-                print decoded
                 if "marca" in decoded:
                     anuncio['marca'] = decoded['marca']
                 if "modelo" in decoded:
