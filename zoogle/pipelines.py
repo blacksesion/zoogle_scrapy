@@ -52,6 +52,9 @@ class SolrPipeline(object):
             self.post_jar_command = 'java -Dtype=application/json -Durl=%s/solr/zoogle/update -jar %s %s'
             self.post_command_str = 'curl "http://localhost:8983/solr/zoogle/update?' \
                                     'commit=true" --data-binary @%s -H "Content-type:application/json"'
+            item['version'] = item['version_det']
+            if item['version'] is None:
+               string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(item['ano'], '').strip()
 
         today = date.today()
         self.counter += 1

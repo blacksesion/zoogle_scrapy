@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
+import json
+import re
 import sys
+
+import demjson as demjson
 import scrapy
 import datetime
 from zoogle.items import ChileautosItem
+import logging
+from scrapy.log import ScrapyFileLogObserver
+
+logfile = open('log_' + str(datetime.date.today())+'.txt', 'w')
+log_observer = ScrapyFileLogObserver(logfile, level=logging.DEBUG)
+log_observer.start()
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -12,8 +22,8 @@ class ChileautosSpider(scrapy.Spider):
     name = "chileautos"
     allowed_domains = ["www.chileautos.cl"]
     base_url = "https://www.chileautos.cl/auto/usado/details/CL-AD-%s"
-    notes_number = 5
-    start_id = 6486824
+    notes_number = 1
+    start_id = 6555929
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
 
@@ -96,4 +106,19 @@ class ChileautosSpider(scrapy.Spider):
                     # '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()').extract()).strip()
                     '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()[1]').extract()).strip()
                 # print field.xpath('//div[@id="tab-content--basic"]/table/tr/node()').extract()
+
+                pattern = re.compile(r'((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', re.MULTILINE | re.DOTALL)
+                data = field.xpath('//script[contains(., "fbq(\'track\', \'INFORMATION\',")]/text()').re(pattern)[0]
+                py_obj = demjson.decode(data)
+                data_obj = json.dumps(py_obj)
+                decoded = json.loads(data_obj)
+                print decoded
+                if "marca" in decoded:
+                    anuncio['marca'] = decoded['marca']
+                if "modelo" in decoded:
+                    anuncio['modelo'] = decoded['modelo']
+                if unicode('año', 'utf-8') in decoded:
+                    anuncio['ano'] = decoded[unicode('año', 'utf-8')]
+                # print anuncio
+
         yield anuncio
