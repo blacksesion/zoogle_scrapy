@@ -38,7 +38,7 @@ class ChileautosSpider(scrapy.Spider):
             url = response.url
             anuncio['id'] = url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
             anuncio['url'] = response.url
-            anuncio['vendido'] = self.utc_date
+            anuncio['vendido'] = {'add': 'NOW'}
         else:
             for field in fields:
                 '''
