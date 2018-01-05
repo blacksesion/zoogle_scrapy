@@ -40,16 +40,17 @@ class SolrPipeline(object):
 
     def process_item(self, item, spider):
         if spider.name == 'chileautos':
-            item['version'] = item['version_det']
-            if item['version'] is None:
-                string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
-                    item['ano'], '').strip()
-            if item['precio_det'] is not None:
-                item['precio'] = {'add': re.sub("\D", "", item['precio_det'])}
-            if item['kilometros_det'] is not None:
-                item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
-            item['fecha_creacion'] = {'add': 'NOW'}
-            item['fecha_precio'] = {'add': 'NOW'}
+            if item['vendido'] is None:
+                item['version'] = item['version_det']
+                if item['version'] is None:
+                    string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
+                        item['ano'], '').strip()
+                if item['precio_det'] is not None:
+                    item['precio'] = {'add': re.sub("\D", "", item['precio_det'])}
+                if item['kilometros_det'] is not None:
+                    item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
+                item['fecha_creacion'] = {'add': 'NOW'}
+                item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
         self.counter += 1
         filename = str(spider.name) + '_' + str(today) + '_' + str(self.counter) + '.json'
