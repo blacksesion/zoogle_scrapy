@@ -57,9 +57,9 @@ class SolrPipeline(object):
             if item['version'] is None:
                 string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
                     item['ano'], '').strip()
-            if item['precio_det'] is None:
+            if item['precio_det'] is not None:
                 item['precio'] = re.sub("\D", "", item['precio_det'])
-            if item['kilometros_det'] is None:
+            if item['kilometros_det'] is not None:
                 item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
 
         today = date.today()
