@@ -61,7 +61,8 @@ class SolrPipeline(object):
                 item['precio'] = re.sub("\D", "", item['precio_det'])
             if item['kilometros_det'] is not None:
                 item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
-
+            item['fecha_creacion'] = {'add': 'NOW'}
+            item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
         self.counter += 1
         filename = str(spider.name) + '_' + str(today) + '_' + str(self.counter) + '.json'

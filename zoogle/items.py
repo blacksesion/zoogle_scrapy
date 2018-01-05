@@ -27,6 +27,7 @@ class ChileautosItem(Item):
     fecha_publicacion = Field()
     fecha_creacion = Field()
     fecha_edicion = Field()
+    fecha_precio = Field()
 
     # detalles destacados
     vehiculo_det = Field()
