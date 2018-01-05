@@ -7,6 +7,7 @@
 
 import json
 import codecs
+import re
 from datetime import date, timedelta, datetime
 from subprocess import call, check_call
 import platform
@@ -54,7 +55,12 @@ class SolrPipeline(object):
                                     'commit=true" --data-binary @%s -H "Content-type:application/json"'
             item['version'] = item['version_det']
             if item['version'] is None:
-               string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(item['ano'], '').strip()
+                string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
+                    item['ano'], '').strip()
+            if item['precio_det'] is None:
+                item['precio'] = re.sub("\D", "", item['precio_det'])
+            if item['kilometros_det'] is None:
+                item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
 
         today = date.today()
         self.counter += 1

@@ -51,9 +51,9 @@ class ChileautosSpider(scrapy.Spider):
                 anuncio['fecha_creacion'] = self.utc_date
                 anuncio['fecha_publicacion'] = ''.join(
                     field.xpath('//div[@class="published-date"]/span/text()').extract()).strip()
-                anuncio['precio'] = ''.join(
+                anuncio['precio_det'] = ''.join(
                     field.xpath('//h3[@class="key-features__price hidden-xs"]/text()').extract()).strip()
-                anuncio['kilometros'] = ''.join(field.xpath(
+                anuncio['kilometros_det'] = ''.join(field.xpath(
                     '//i[@class="csn-icons csn-icons-odometer"]/following-sibling::text()[1]').extract()).strip()
                 anuncio['categoria'] = ''.join(field.xpath(
                     '//i[@class="csn-icons csn-icons-garage"]/following-sibling::text()[1]').extract()).strip()
