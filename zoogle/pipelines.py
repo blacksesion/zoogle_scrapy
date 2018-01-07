@@ -73,4 +73,4 @@ class SolrPipeline(object):
                 print 'Success removed'
         except:
             print 'Error removing file'
-        # return item
+        return item
