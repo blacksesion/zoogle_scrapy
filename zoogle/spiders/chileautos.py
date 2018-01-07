@@ -48,8 +48,8 @@ class ChileautosSpider(scrapy.Spider):
                 anuncio['id'] = url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
                 anuncio['url'] = response.url
                 anuncio['header_nombre'] = ''.join(field.xpath('h1/text()').extract()).strip()
-                anuncio['fecha_publicacion'] = ''.join(
-                    field.xpath('//div[@class="published-date"]/span/text()').extract()).strip()
+                anuncio['fecha_publicacion'] = {'add': ''.join(
+                    field.xpath('//div[@class="published-date"]/span/text()').extract()).strip()}
                 anuncio['precio_det'] = ''.join(
                     field.xpath('//h3[@class="key-features__price hidden-xs"]/text()').extract()).strip()
                 anuncio['kilometros_det'] = ''.join(field.xpath(

@@ -47,6 +47,7 @@ class SolrPipeline(object):
                         item['ano'], '').strip()
                 if item['precio_det'] is not None:
                     item['precio'] = {'add': re.sub("\D", "", item['precio_det'])}
+                    item['precio_det'] = re.sub("\D", "", item['precio_det'])
                 if item['kilometros_det'] is not None:
                     item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
                 item['fecha_creacion'] = {'add': 'NOW'}
