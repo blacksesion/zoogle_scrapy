@@ -44,6 +44,7 @@ class ChileautosSpider(scrapy.Spider):
                 '''
                 Carga de datos generales
                 '''
+                anuncio['vendido'] = None
                 url = response.url
                 anuncio['id'] = url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
                 anuncio['url'] = response.url
