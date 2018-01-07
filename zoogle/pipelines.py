@@ -46,8 +46,9 @@ class SolrPipeline(object):
                     string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
                         item['ano'], '').strip()
                 if item['precio_det'] is not None:
-                    item['precio'] = {'add': re.sub("\D", "", item['precio_det'])}
-                    item['precio_hoy'] = re.sub("\D", "", item['precio_det'])
+                    precio = re.sub("\D", "", item['precio_det'])
+                    item['precio'] = {'add': precio}
+                    item['precio_hoy'] = precio
                 if item['kilometros_det'] is not None:
                     item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
                 item['fecha_creacion'] = {'add': 'NOW'}
