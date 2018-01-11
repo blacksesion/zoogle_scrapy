@@ -27,7 +27,8 @@ USER_AGENT_LIST = [
 
 DOWNLOADER_MIDDLEWARES = {
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
-    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+    # 'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     # 'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
     'scrapy.spidermiddlewares.referer.RefererMiddleware': True,
 }
