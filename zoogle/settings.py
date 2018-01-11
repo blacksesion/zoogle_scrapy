@@ -23,9 +23,9 @@ SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'zoogle (+http://www.yourdomain.com)'
+# USER_AGENT = 'zoogle (+http://www.yourdomain.com)'
 
-LOG_FILE = 'log_' + str(datetime.date.today())+'.txt'
-LOG_ENABLED = True
-LOG_ENCODING = 'utf-8'
-ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline':700}
+# LOG_FILE = 'log_' + str(datetime.date.today())+'.txt'
+# LOG_ENABLED = True
+# LOG_ENCODING = 'utf-8'
+# ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline':700}

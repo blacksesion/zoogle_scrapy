@@ -11,6 +11,7 @@ from zoogle.items import ChileautosItem
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
 class ChileautosSpider(scrapy.Spider):
     name = "chileautos"
     allowed_domains = ["www.chileautos.cl"]
@@ -105,6 +106,6 @@ class ChileautosSpider(scrapy.Spider):
                     anuncio['modelo'] = decoded['modelo']
                 if unicode('año', 'utf-8') in decoded:
                     anuncio['ano'] = decoded[unicode('año', 'utf-8')]
-                # print anuncio
+                    # print anuncio
 
         yield anuncio

@@ -10,6 +10,7 @@ from scrapy import Item, Field
 
 class ChileautosItem(Item):
     id = Field()
+    tipo_anuncio = Field()
     url = Field()
     header_nombre = Field()
     ano = Field()
