@@ -26,7 +26,19 @@ class JsonWithEncodingPipeline(object):
 
 
 class ZooglePipeline(object):
+    def __init__(self):
+        self.counter = 0
+
     def process_item(self, item, spider):
+        today = date.today()
+        self.counter += 1
+        filename = str(spider.name) + '_' + str(today) + '_' + str(self.counter) + '.json'
+        self.file = codecs.open(filename, 'w', encoding='utf-8')
+        dump = []
+        dump.append(dict(item))
+        line = json.dumps(dump)
+        self.file.write(line)
+        self.file.close()
         return item
 
 

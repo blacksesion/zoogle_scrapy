@@ -12,6 +12,7 @@ sys.setdefaultencoding('utf-8')
 
 
 class YapoSpider(scrapy.Spider):
+    handle_httpstatus_list = [504]
     name = "yapo"
     allowed_domains = ["www.yapo.cl"]
     base_url = "https://www.yapo.cl/chile/autos?ca=15_s&st=s&cg=2020&o=%s"
@@ -38,14 +39,13 @@ class YapoSpider(scrapy.Spider):
             comuna = ''.join(item.xpath("//span[@class='commune'][0]").extract())
             dia = ''.join(item.xpath("//span[@class='date'][0]").extract())
             hora = ''.join(item.xpath("//span[@class='hour'][0]").extract())
-            link = ''.join(item.xpath("//a[@class='redirect-to-url']@href[0]").extract())
+            link = ''.join(item.xpath("//a[@class='title']/@href").extract())
             request = scrapy.Request(link, callback=self.parse_thumb)
             request.meta['region'] = region
             request.meta['comuna'] = comuna
             request.meta['dia'] = dia
             request.meta['hora'] = hora
             yield request
-
 
     def parse_thumb(self, response):
         hxs = scrapy.Selector(response)
@@ -72,7 +72,8 @@ class YapoSpider(scrapy.Spider):
                 anuncio['vendido'] = None
                 anuncio['id'] = anuncio_id
                 anuncio['url'] = url
-                anuncio['header_nombre'] = ''.join(field.xpath('h5[@class="car-title title-details"/text()').extract()).strip()
+                anuncio['header_nombre'] = ''.join(
+                    field.xpath('h5[@class="car-title title-details"/text()').extract()).strip()
                 anuncio['fecha_publicacion'] = {'add': dia + hora}
                 anuncio['precio_det'] = ''.join(
                     field.xpath('//div[@class="price text-right"][1]/text()').extract()).strip()

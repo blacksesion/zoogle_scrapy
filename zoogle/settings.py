@@ -9,9 +9,11 @@
 #
 import datetime
 
-# BOT_NAME = 'zoogle'
 BOT_NAME = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1'
 COOKIES_ENABLED = True
+
+HTTPERROR_ALLOW_ALL = True
+HTTPERROR_ALLOWED_CODES = [504]
 
 USER_AGENT_LIST = [
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.36 Safari/535.7',
@@ -19,13 +21,20 @@ USER_AGENT_LIST = [
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.3 Safari/534.53.10'
 ]
 
+# DOWNLOADER_MIDDLEWARES = {'scrapy.contrib.spidermiddleware.httperror.HttpErrorMiddleware': True,}
+
+# DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.CustomClientContextFactory.CustomClientContextFactory'
+
+DOWNLOADER_MIDDLEWARES = {
+    'zoogle.middlewares.RandomUserAgentMiddleware': 400,
+    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+    'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
+}
+
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
 
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'zoogle (+http://www.yourdomain.com)'
-
-# LOG_FILE = 'log_' + str(datetime.date.today())+'.txt'
-# LOG_ENABLED = True
-# LOG_ENCODING = 'utf-8'
-# ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline':700}
+LOG_FILE = 'log_' + str(datetime.date.today()) + '.txt'
+LOG_ENABLED = True
+LOG_ENCODING = 'utf-8'
+ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
