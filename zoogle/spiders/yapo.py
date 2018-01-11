@@ -16,7 +16,7 @@ class YapoSpider(scrapy.Spider):
     name = "yapo"
     allowed_domains = ["www.yapo.cl"]
     base_url = "https://www.yapo.cl/chile/autos?ca=15_s&st=s&cg=2020&o=%s"
-    pages_number = 5
+    pages_number = 1
     start_page = 1
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
@@ -35,11 +35,12 @@ class YapoSpider(scrapy.Spider):
         hxs = scrapy.Selector(response)
         thumbs = hxs.xpath("//tr[@class='ad listing_thumbs']")
         for item in thumbs:
-            region = ''.join(item.xpath("//span[@class='region'][0]").extract())
-            comuna = ''.join(item.xpath("//span[@class='commune'][0]").extract())
-            dia = ''.join(item.xpath("//span[@class='date'][0]").extract())
-            hora = ''.join(item.xpath("//span[@class='hour'][0]").extract())
-            link = ''.join(item.xpath("//a[@class='title']/@href").extract())
+            print item.xpath("node()/a[@class='title']/@href").extract()
+            region = ''.join(item.xpath("node()/span[@class='region'][0]").extract())
+            comuna = ''.join(item.xpath("node()/span[@class='commune'][0]").extract())
+            dia = ''.join(item.xpath("node()/span[@class='date'][0]").extract())
+            hora = ''.join(item.xpath("node()/span[@class='hour'][0]").extract())
+            link = ''.join(item.xpath("node()/a[@class='title']/@href").extract())
             request = scrapy.Request(link, callback=self.parse_thumb)
             request.meta['region'] = region
             request.meta['comuna'] = comuna
@@ -50,8 +51,8 @@ class YapoSpider(scrapy.Spider):
     def parse_thumb(self, response):
         hxs = scrapy.Selector(response)
         url = response.url
-        pattern = re.compile(r'(?!\=)\d+(?=\&)', re.MULTILINE)
-        anuncio_id = "yapo_" + url.re(pattern)[0]
+        m = re.search('(?!\=)\d+(?=\&)', url)
+        anuncio_id = m.group(0)
         region = response.meta['region']
         comuna = response.meta['comuna']
         dia = response.meta['dia']
@@ -73,7 +74,7 @@ class YapoSpider(scrapy.Spider):
                 anuncio['id'] = anuncio_id
                 anuncio['url'] = url
                 anuncio['header_nombre'] = ''.join(
-                    field.xpath('h5[@class="car-title title-details"/text()').extract()).strip()
+                    field.xpath('h5[@class="car-title title-details"]/text()').extract()).strip()
                 anuncio['fecha_publicacion'] = {'add': dia + hora}
                 anuncio['precio_det'] = ''.join(
                     field.xpath('//div[@class="price text-right"][1]/text()').extract()).strip()
