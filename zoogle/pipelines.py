@@ -51,20 +51,21 @@ class SolrPipeline(object):
         self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl']
 
     def process_item(self, item, spider):
-        if spider.name == 'chileautos':
+        if spider.name == 'chileautos' or spider.name == 'yapo':
             if item['vendido'] is None:
                 item['version'] = item['version_det']
                 if item['version'] is None:
                     string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
                         item['ano'], '').strip()
+                    item['version'] = string
                 if item['precio_det'] is not None:
                     precio = re.sub("\D", "", item['precio_det'])
                     item['precio'] = {'add': precio}
                     item['precio_hoy'] = precio
                 if item['kilometros_det'] is not None:
                     item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
-                item['fecha_creacion'] = {'add': 'NOW'}
-                item['fecha_precio'] = {'add': 'NOW'}
+        item['fecha_creacion'] = {'add': 'NOW'}
+        item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
         self.counter += 1
         filename = str(spider.name) + '_' + str(today) + '_' + str(self.counter) + '.json'

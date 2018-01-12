@@ -5,6 +5,8 @@ import sys
 import scrapy
 import datetime
 import demjson as demjson
+from scrapy.exceptions import CloseSpider
+
 from zoogle.items import ChileautosItem
 
 reload(sys)
@@ -16,7 +18,7 @@ class YapoSpider(scrapy.Spider):
     name = "yapo"
     allowed_domains = ["www.yapo.cl"]
     base_url = "https://www.yapo.cl/chile/autos?ca=15_s&st=s&cg=2020&o=%s"
-    pages_number = 1
+    pages_number = 6000
     start_page = 1
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
@@ -34,18 +36,11 @@ class YapoSpider(scrapy.Spider):
     def parse(self, response):
         hxs = scrapy.Selector(response)
         thumbs = hxs.xpath("//tr[@class='ad listing_thumbs']")
+        if len(thumbs) < 1:
+            self.quit()
         for item in thumbs:
-            print item.xpath("node()/a[@class='title']/@href").extract()
-            region = ''.join(item.xpath("node()/span[@class='region'][0]").extract())
-            comuna = ''.join(item.xpath("node()/span[@class='commune'][0]").extract())
-            dia = ''.join(item.xpath("node()/span[@class='date'][0]").extract())
-            hora = ''.join(item.xpath("node()/span[@class='hour'][0]").extract())
             link = ''.join(item.xpath("node()/a[@class='title']/@href").extract())
             request = scrapy.Request(link, callback=self.parse_thumb)
-            request.meta['region'] = region
-            request.meta['comuna'] = comuna
-            request.meta['dia'] = dia
-            request.meta['hora'] = hora
             yield request
 
     def parse_thumb(self, response):
@@ -53,10 +48,6 @@ class YapoSpider(scrapy.Spider):
         url = response.url
         m = re.search('(?!\=)\d+(?=\&)', url)
         anuncio_id = m.group(0)
-        region = response.meta['region']
-        comuna = response.meta['comuna']
-        dia = response.meta['dia']
-        hora = response.meta['hora']
         self.log('url: %s' % url)
         fields = hxs.xpath("//section[@class='box da-wrapper']")
         anuncio = ChileautosItem()
@@ -70,24 +61,53 @@ class YapoSpider(scrapy.Spider):
                 '''
                 Carga de datos generales
                 '''
+                pattern = re.compile(r'((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', re.MULTILINE | re.DOTALL)
+                data = field.xpath('//script[contains(., "var utag_data =")]/text()').re(pattern)[0]
+                py_obj = demjson.decode(data)
+                data_obj = json.dumps(py_obj)
+                decoded = json.loads(data_obj)
+                print decoded
+
+                if "ad_id" in decoded:
+                    anuncio['id'] = decoded['ad_id']
+                if "brand" in decoded:
+                    anuncio['marca'] = decoded['brand']
+                if "model" in decoded:
+                    anuncio['modelo'] = decoded['model']
+                if "year" in decoded:
+                    anuncio['ano'] = decoded["year"]
+                if "version" in decoded:
+                    anuncio['version_det'] = decoded["version"]
+                if "price" in decoded:
+                    anuncio['precio_det'] = decoded["price"]
+                if "description" in decoded:
+                    anuncio['comentarios'] = decoded["description"]
+                if "publish_date" in decoded:
+                    anuncio['fecha_publicacion'] = decoded["publish_date"]
+                if "km" in decoded:
+                    anuncio['kilometros_det'] = decoded["km"]
+                if "ad_title" in decoded:
+                    anuncio['header_nombre'] = decoded["ad_title"]
+                if "category_level2" in decoded:
+                    anuncio['categoria'] = decoded["category_level2"]
+                if "car_type" in decoded:
+                    anuncio['carroceria'] = decoded["car_type"]
+                if "fuel" in decoded:
+                    anuncio['combustible_det'] = decoded["fuel"]
+                if "region_level2" in decoded:
+                    anuncio['region_det'] = decoded["region_level2"]
+                if "region_level3" in decoded:
+                    anuncio['ciudad_det'] = decoded["region_level3"]
+                if "transmission" in decoded:
+                    anuncio['transmision_det'] = decoded["transmission"]
+
                 anuncio['vendido'] = None
-                anuncio['id'] = anuncio_id
+                if anuncio['id'] is None:
+                    anuncio['id'] = anuncio_id
                 anuncio['url'] = url
-                anuncio['header_nombre'] = ''.join(
-                    field.xpath('h5[@class="car-title title-details"]/text()').extract()).strip()
-                anuncio['fecha_publicacion'] = {'add': dia + hora}
-                anuncio['precio_det'] = ''.join(
-                    field.xpath('//div[@class="price text-right"][1]/text()').extract()).strip()
-                anuncio['kilometros_det'] = ''.join(field.xpath(
-                    '//tr[th/text()="' + unicode('Kilómetros', 'utf-8') + '"]/td/text()').extract()).strip()
-                anuncio['categoria'] = "Autos, camionetas y 4x4"
-                anuncio['carroceria'] = ''.join(field.xpath(
-                    '//tr[th/text()="' + unicode('Tipo de vehículo', 'utf-8') + '"]/td/text()').extract()).strip()
-                anuncio['ano'] = ''.join(field.xpath(
-                    '//tr[th/text()="' + unicode('Año', 'utf-8') + '"]/td/text()').extract()).strip()
-                anuncio['region'] = region
-                anuncio['comentarios'] = ''.join(field.xpath(
-                    '//div[@class="description"]/p/text()').extract()).strip()
                 anuncio['tipo_anuncio'] = ''.join(field.xpath(
                     '//p[@class="name"]/text()').extract()).strip()
         yield anuncio
+
+    def quit(self):
+        raise CloseSpider('No hay mas anuncios.')
