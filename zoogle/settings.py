@@ -24,7 +24,7 @@ USER_AGENT_LIST = [
 
 # DOWNLOADER_MIDDLEWARES = {'scrapy.contrib.spidermiddleware.httperror.HttpErrorMiddleware': True,}
 
-# DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.CustomClientContextFactory.CustomClientContextFactory'
+DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.CustomClientContextFactory.CustomClientContextFactory'
 
 DOWNLOADER_MIDDLEWARES = {
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
