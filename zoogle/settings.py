@@ -38,7 +38,7 @@ DOWNLOAD_DELAY = 5
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
 
-# LOG_FILE = 'log_' + str(datetime.date.today()) + '.txt'
-# LOG_ENABLED = True
-# LOG_ENCODING = 'utf-8'
-# ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
+LOG_FILE = 'log_' + str(datetime.date.today()) + '.txt'
+LOG_ENABLED = True
+LOG_ENCODING = 'utf-8'
+ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
