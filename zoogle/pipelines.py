@@ -44,8 +44,8 @@ class ZooglePipeline(object):
 
 class SolrPipeline(object):
     def __init__(self):
-        self.post_command_str = 'curl "http://localhost:8983/solr/zoogle/update?' \
-                                'commit=true" --data-binary @%s -H "Content-type:application/json"'
+        # self.post_command_str = 'curl "http://localhost:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
+        self.post_command_str = 'curl "http://http://ec2-54-233-216-144.sa-east-1.compute.amazonaws.com:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
         self.collection = '/solr/zoogle/update'
         self.counter = 0
         self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl']
