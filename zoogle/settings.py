@@ -30,7 +30,7 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
 }
 
-CONCURRENT_REQUESTS = 1
+CONCURRENT_REQUESTS = 4
 DOWNLOAD_DELAY = 5
 
 SPIDER_MODULES = ['zoogle.spiders']

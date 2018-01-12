@@ -66,8 +66,6 @@ class YapoSpider(scrapy.Spider):
                 py_obj = demjson.decode(data)
                 data_obj = json.dumps(py_obj)
                 decoded = json.loads(data_obj)
-                print decoded
-
                 if "ad_id" in decoded:
                     anuncio['id'] = decoded['ad_id']
                 if "brand" in decoded:
@@ -100,7 +98,6 @@ class YapoSpider(scrapy.Spider):
                     anuncio['ciudad_det'] = decoded["region_level3"]
                 if "transmission" in decoded:
                     anuncio['transmision_det'] = decoded["transmission"]
-
                 anuncio['vendido'] = None
                 if anuncio['id'] is None:
                     anuncio['id'] = anuncio_id

@@ -94,7 +94,6 @@ class ChileautosSpider(scrapy.Spider):
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
                 anuncio['version_det'] = ''.join(field.xpath(
                     '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()[1]').extract()).strip()
-
                 pattern = re.compile(r'((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', re.MULTILINE | re.DOTALL)
                 data = field.xpath('//script[contains(., "fbq(\'track\', \'INFORMATION\',")]/text()').re(pattern)[0]
                 py_obj = demjson.decode(data)
@@ -107,5 +106,4 @@ class ChileautosSpider(scrapy.Spider):
                 if unicode('año', 'utf-8') in decoded:
                     anuncio['ano'] = decoded[unicode('año', 'utf-8')]
                     # print anuncio
-
         yield anuncio
