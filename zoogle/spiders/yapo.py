@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # author = 'BlackSesion'
+import codecs
 import json
 import re
 import sys
 import scrapy
 import datetime
 import demjson as demjson
+from pathlib import Path
 from scrapy.exceptions import CloseSpider
 
 from zoogle.items import ChileautosItem
@@ -21,28 +23,49 @@ class YapoSpider(scrapy.Spider):
     base_url = "https://www.yapo.cl/chile/autos?ca=15_s&st=s&cg=2020&o=%s"
     pages_number = 6000
     start_page = 1
+    item_x_page = 50
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
+    total_item_path = Path("total_item_yapo.txt")
 
-    def __init__(self, init_page=None, deep=None, *args, **kwargs):
+    def __init__(self, init_page=None, deep=None, num_items=None, *args, **kwargs):
         super(YapoSpider, self).__init__(*args, **kwargs)
+        total_item = None
         if init_page is not None:
             self.start_page = int(init_page)
         if deep is not None:
             self.pages_number = int(deep)
+        if num_items is not None:
+            self.item_x_page = int(num_items)
 
+        if self.total_item_path.is_file():
+            archivo = codecs.open("total_item_yapo.txt", 'r')
+            total_item = archivo.read()
+            archivo.close()
+        if total_item is not "" and total_item is not None:
+            self.pages_number = int(total_item / self.item_x_page)
         self.start_urls = [self.base_url % id for id in
-                           xrange(self.start_page, self.start_page + self.pages_number + 1)]
+                           xrange(self.start_page, self.pages_number)]
 
     def parse(self, response):
         hxs = scrapy.Selector(response)
+        pages = hxs.xpath("//li[@class='tab_country']/h1/span/text()").extract()
+        pages_data = pages[1].split("de")
+        total_item = re.sub("\D", "", pages_data[1])
+        if total_item is not "" and total_item is not None:
+            archivo = codecs.open("total_item_yapo.txt", 'w', encoding='utf-8')
+            archivo.write(total_item)
+            archivo.close()
         thumbs = hxs.xpath("//tr[@class='ad listing_thumbs']")
         if len(thumbs) < 1:
             self.quit()
         for item in thumbs:
             link = ''.join(item.xpath("node()/a[@class='title']/@href").extract())
-            request = scrapy.Request(link, callback=self.parse_thumb)
-            yield request
+            if link is not None and link is not "":
+                request = scrapy.Request(link, callback=self.parse_thumb)
+                yield request
+            else:
+                print "Link no existe\n"
 
     def parse_thumb(self, response):
         hxs = scrapy.Selector(response)
