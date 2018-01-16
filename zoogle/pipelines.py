@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# author = 'BlackSesion'
 
 # Define your item pipelines here
 #

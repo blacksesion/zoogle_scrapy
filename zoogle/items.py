@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# author = 'BlackSesion'
 
 # Define here the models for your scraped items
 #

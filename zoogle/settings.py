@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# author = 'BlackSesion'
 
 # Scrapy settings for zoogle project
 #
@@ -40,3 +41,8 @@ LOG_FILE = 'log_' + str(datetime.date.today()) + '.txt'
 LOG_ENABLED = True
 LOG_ENCODING = 'utf-8'
 ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
+
+DB_HOST = "zoogle.cftvvftzug4h.sa-east-1.rds.amazonaws.com"
+DB_USER = "zoogleadmin"
+DB_PASSWD = "zoogle1234"
+DB_DBNAME = "zoogle"

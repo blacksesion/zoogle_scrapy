@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# author = 'BlackSesion'
 
 import random
 from scrapy.conf import settings
