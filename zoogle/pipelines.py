@@ -72,6 +72,7 @@ class SolrPipeline(object):
                     item['precio'] = {'add': precio}
                     item['precio_hoy'] = {"set": precio}
                 item['precio_det'] = None
+                item['url'] = None
         item['fecha_creacion'] = {'add': 'NOW'}
         item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
