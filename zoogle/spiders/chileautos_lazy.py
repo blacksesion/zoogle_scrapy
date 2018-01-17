@@ -76,7 +76,7 @@ class ChileautosLazySpider(scrapy.Spider):
 
         anuncio = ChileautosItem()
         if not fields:
-            anuncio['id'] = url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
+            anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
             anuncio['url'] = url
             anuncio['vendido'] = {'add': 'NOW'}
         else:
@@ -85,7 +85,7 @@ class ChileautosLazySpider(scrapy.Spider):
                 Carga de datos generales
                 '''
                 anuncio['vendido'] = None
-                anuncio['id'] = url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
+                anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
                 anuncio['url'] = url
                 anuncio['header_nombre'] = ''.join(field.xpath('h1/text()').extract()).strip()
                 anuncio['fecha_publicacion'] = {'add': ''.join(

@@ -49,10 +49,10 @@ class SolrPipeline(object):
         self.post_command_str = 'curl "http://ec2-54-233-216-144.sa-east-1.compute.amazonaws.com:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
         self.collection = '/solr/zoogle/update'
         self.counter = 0
-        self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl']
+        self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl', 'yapo.cl', 'www.yapo.cl']
 
     def process_item(self, item, spider):
-        if spider.name == 'chileautos' or spider.name == 'yapo':
+        if spider.name == 'chileautos' or spider.name == 'chileautos-lazy' or spider.name == 'yapo':
             if item['vendido'] is None:
                 item['version'] = item['version_det']
                 if item['version'] is None:
@@ -65,6 +65,12 @@ class SolrPipeline(object):
                     item['precio_hoy'] = precio
                 if item['kilometros_det'] is not None:
                     item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
+        if spider.name == 'update-chileautos' or spider.name == 'update-yapo':
+            if item['vendido'] is None:
+                if item['precio_det'] is not None:
+                    precio = re.sub("\D", "", item['precio_det'])
+                    item['precio'] = {'add': precio}
+                    item['precio_hoy'] = precio
         item['fecha_creacion'] = {'add': 'NOW'}
         item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
