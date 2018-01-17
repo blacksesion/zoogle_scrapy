@@ -37,7 +37,6 @@ class YapoSpider(scrapy.Spider):
             self.pages_number = int(deep)
         if num_items is not None:
             self.item_x_page = int(num_items)
-
         if self.total_item_path.is_file():
             archivo = codecs.open("total_item_yapo.txt", 'r')
             total_item = archivo.read()
@@ -77,7 +76,7 @@ class YapoSpider(scrapy.Spider):
         anuncio = ChileautosItem()
         if not fields:
             url = response.url
-            anuncio['id'] = anuncio_id
+            anuncio['id'] = "yapo_" + anuncio_id
             anuncio['url'] = url
             anuncio['vendido'] = {'add': 'NOW'}
         else:
@@ -91,7 +90,7 @@ class YapoSpider(scrapy.Spider):
                 data_obj = json.dumps(py_obj)
                 decoded = json.loads(data_obj)
                 if "ad_id" in decoded:
-                    anuncio['id'] = decoded['ad_id']
+                    anuncio['id'] = "yapo_" + decoded['ad_id']
                 if "brand" in decoded:
                     anuncio['marca'] = decoded['brand']
                 if "model" in decoded:
@@ -124,7 +123,7 @@ class YapoSpider(scrapy.Spider):
                     anuncio['transmision_det'] = decoded["transmission"]
                 anuncio['vendido'] = None
                 if anuncio['id'] is None:
-                    anuncio['id'] = anuncio_id
+                    anuncio['id'] = "yapo_" + anuncio_id
                 anuncio['url'] = url
                 anuncio['tipo_anuncio'] = ''.join(field.xpath(
                     '//p[@class="name"]/text()').extract()).strip()
