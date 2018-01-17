@@ -70,7 +70,8 @@ class SolrPipeline(object):
                 if item['precio_det'] is not None:
                     precio = re.sub("\D", "", item['precio_det'])
                     item['precio'] = {'add': precio}
-                    item['precio_hoy'] = precio
+                    item['precio_hoy'] = {"set": precio}
+                item['precio_det'] = None
         item['fecha_creacion'] = {'add': 'NOW'}
         item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
