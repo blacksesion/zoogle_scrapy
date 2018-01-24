@@ -36,7 +36,8 @@ class UpdateYapoSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         super(UpdateYapoSpider, self).__init__(*args, **kwargs)
-        service_solr = 'http://ec2-54-233-216-144.sa-east-1.compute.amazonaws.com:8983'
+        # service_solr = 'http://ec2-54-233-216-144.sa-east-1.compute.amazonaws.com:8983'
+        service_solr = 'http://localhost:8983'
         solr_core = 'zoogle'
 
         self.post_command_str = 'curl "' + service_solr + '/solr/' + solr_core + '/update?commit=true" --data-binary @%s -H "Content-type:application/json"'

@@ -31,8 +31,8 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
 }
 
-CONCURRENT_REQUESTS = 4
-DOWNLOAD_DELAY = 5
+# CONCURRENT_REQUESTS = 4
+# DOWNLOAD_DELAY = 5
 
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
@@ -42,7 +42,7 @@ LOG_ENABLED = True
 LOG_ENCODING = 'utf-8'
 ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
 
-DB_HOST = "zoogle.cftvvftzug4h.sa-east-1.rds.amazonaws.com"
-DB_USER = "zoogleadmin"
-DB_PASSWD = "zoogle1234"
+DB_HOST = "localhost"
+DB_USER = "zoogle_user"
+DB_PASSWD = "admin1234"
 DB_DBNAME = "zoogle"
