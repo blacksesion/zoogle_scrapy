@@ -42,7 +42,7 @@ class YapoSpider(scrapy.Spider):
             total_item = archivo.read()
             archivo.close()
         if total_item is not "" and total_item is not None:
-            self.pages_number = int(total_item / self.item_x_page)
+            self.pages_number = int(int(total_item) / self.item_x_page)
         self.start_urls = [self.base_url % id for id in
                            xrange(self.start_page, self.pages_number)]
 
