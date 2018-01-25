@@ -41,6 +41,7 @@ class ChileautosItem(Item):
     puertas = Field()
     puertas_det = Field()
     pasajeros_det = Field()
+    pasajeros = Field()
     combustible_det = Field()
     consumo_det = Field()
     region_det = Field()

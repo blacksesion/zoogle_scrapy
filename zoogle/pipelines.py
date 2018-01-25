@@ -61,18 +61,23 @@ class SolrPipeline(object):
                     item['version'] = string
                 if item['precio_det'] is not None:
                     precio = re.sub("\D", "", item['precio_det'])
-                    item['precio'] = {'add': precio}
-                    item['precio_hoy'] = precio
+                    item['precio'] = {'add': precio if precio is not '' else 0}
+                    item['precio_hoy'] = precio if precio is not '' else 0
                 if item['kilometros_det'] is not None:
-                    item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
+                    kilom = re.sub("\D", "", item['kilometros_det'])
+                    item['kilometros'] = kilom if kilom is not '' else 0
                 if item['puertas_det'] is not None:
-                    item['puertas'] = re.sub("\D", "", item['puertas_det'])
+                    puertas = re.sub("\D", "", item['puertas_det'])
+                    item['puertas'] = puertas if puertas is not '' else 0
+                if item['pasajeros_det'] is not None:
+                    pasaj = re.sub("\D", "", item['pasajeros_det'])
+                    item['pasajeros'] = pasaj if pasaj is not '' else 0
         if spider.name == 'update-chileautos' or spider.name == 'update-yapo':
             if item['vendido'] is None:
                 if item['precio_det'] is not None:
                     precio = re.sub("\D", "", item['precio_det'])
-                    item['precio'] = {'add': precio}
-                    item['precio_hoy'] = {"set": precio}
+                    item['precio'] = {'add': precio if precio is not '' else 0}
+                    item['precio_hoy'] = {"set": precio if precio is not '' else 0}
                 item['precio_det'] = None
                 item['url'] = None
         item['fecha_creacion'] = {'add': 'NOW'}
