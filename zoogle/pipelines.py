@@ -52,7 +52,7 @@ class SolrPipeline(object):
         self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl', 'yapo.cl', 'www.yapo.cl']
 
     def process_item(self, item, spider):
-        if spider.name == 'chileautos' or spider.name == 'chileautos-lazy' or spider.name == 'yapo':
+        if spider.name == 'chileautos' or spider.name == 'chileautos-lazy':
             if item['vendido'] is None:
                 item['version'] = item['version_det'] if item['version_det'] is not None else None
                 if item['version'] is None:
@@ -72,6 +72,20 @@ class SolrPipeline(object):
                 if item['pasajeros_det'] is not None:
                     pasaj = re.sub("\D", "", item['pasajeros_det'])
                     item['pasajeros'] = pasaj if pasaj is not '' else 0
+        if spider.name == 'yapo':
+            if item['vendido'] is None:
+                item['version'] = item['version_det'] if item['version_det'] is not None else None
+                if item['version'] is None:
+                    string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
+                        item['ano'], '').strip()
+                    item['version'] = string
+                if item['precio_det'] is not None:
+                    precio = re.sub("\D", "", item['precio_det'])
+                    item['precio'] = {'add': precio if precio is not '' else 0}
+                    item['precio_hoy'] = precio if precio is not '' else 0
+                if item['kilometros_det'] is not None:
+                    kilom = re.sub("\D", "", item['kilometros_det'])
+                    item['kilometros'] = kilom if kilom is not '' else 0
         if spider.name == 'update-chileautos' or spider.name == 'update-yapo':
             if item['vendido'] is None:
                 if item['precio_det'] is not None:

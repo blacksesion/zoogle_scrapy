@@ -127,8 +127,6 @@ class YapoSpider(scrapy.Spider):
                 anuncio['tipo_anuncio'] = ''.join(field.xpath(
                     '//p[@class="name"]/text()').extract()).strip()
                 anuncio['vendido'] = None
-                anuncio['puertas_det'] = None
-                anuncio['pasajeros_det'] = None
         yield anuncio
 
     def quit(self):
