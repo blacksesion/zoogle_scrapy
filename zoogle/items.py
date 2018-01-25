@@ -38,6 +38,7 @@ class ChileautosItem(Item):
     kilometros_det = Field()
     color_exterior_det = Field()
     transmision_det = Field()
+    puertas = Field()
     puertas_det = Field()
     pasajeros_det = Field()
     combustible_det = Field()
