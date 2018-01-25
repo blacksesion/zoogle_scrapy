@@ -65,8 +65,10 @@ class SolrPipeline(object):
                     item['precio_hoy'] = precio
                 if item['kilometros_det'] is not None:
                     item['kilometros'] = re.sub("\D", "", item['kilometros_det'])
-                if item['puertas_det'] is not None:
+                if item['puertas_det'] is not None and item['puertas_det'] is not '':
                     item['puertas_det'] = re.sub("\D", "", item['puertas_det'])
+                    if item['puertas_det'] is '':
+                        item['puertas_det'] = None
         if spider.name == 'update-chileautos' or spider.name == 'update-yapo':
             if item['vendido'] is None:
                 if item['precio_det'] is not None:
