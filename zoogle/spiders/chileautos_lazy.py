@@ -131,7 +131,7 @@ class ChileautosLazySpider(scrapy.Spider):
                 anuncio['ciudad_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
                 anuncio['version_det'] = ''.join(field.xpath(
-                    '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()[1]').extract()).strip()
+                    '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()
                 pattern = re.compile(r'((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', re.MULTILINE | re.DOTALL)
                 data = field.xpath('//script[contains(., "fbq(\'track\', \'INFORMATION\',")]/text()').re(pattern)[0]
                 py_obj = demjson.decode(data)
