@@ -121,12 +121,14 @@ class YapoSpider(scrapy.Spider):
                     anuncio['ciudad_det'] = decoded["region_level3"]
                 if "transmission" in decoded:
                     anuncio['transmision_det'] = decoded["transmission"]
-                anuncio['vendido'] = None
                 if anuncio['id'] is None:
                     anuncio['id'] = "yapo_" + anuncio_id
                 anuncio['url'] = url
                 anuncio['tipo_anuncio'] = ''.join(field.xpath(
                     '//p[@class="name"]/text()').extract()).strip()
+                anuncio['vendido'] = None
+                anuncio['puertas_det'] = None
+                anuncio['pasajeros_det'] = None
         yield anuncio
 
     def quit(self):
