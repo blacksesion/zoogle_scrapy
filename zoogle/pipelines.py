@@ -54,7 +54,7 @@ class SolrPipeline(object):
     def process_item(self, item, spider):
         if spider.name == 'chileautos' or spider.name == 'chileautos-lazy' or spider.name == 'yapo':
             if item['vendido'] is None:
-                item['version'] = item['version_det']
+                item['version'] = item['version_det'] if item['version_det'] is not None else None
                 if item['version'] is None:
                     string = item['header_nombre'].replace(item['marca'], '').replace(item['modelo'], '').replace(
                         item['ano'], '').strip()
