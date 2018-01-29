@@ -92,7 +92,7 @@ class UpdateVersionSpider(scrapy.Spider):
 
     def get_version_sii(self, anuncio_id, version, marca, modelo, ano, puertas):
         response = None
-        if anuncio_id is not None:
+        if anuncio_id is not None and version is not None:
             cursor = self.cnx.cursor(buffered=True)
             anuncio_arr = anuncio_id.split('_')
             if anuncio_arr[0] == "yapo":
