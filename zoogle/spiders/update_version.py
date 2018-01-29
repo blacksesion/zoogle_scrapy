@@ -28,10 +28,10 @@ class UpdateVersionSpider(scrapy.Spider):
     date_str = '[' + str(today_str) + 'T00:00:00Z TO ' + str(today_str) + 'T23:59:59Z ]'
     params = {
         # 'q': 'id:ca_* AND -version_sii:*',
-        'q': 'id:ca_* AND -version_sii:* AND marca:chevrolet AND modelo:aveo AND ano:2010',
+        'q': '*:* AND -version_sii:* AND marca:chevrolet AND modelo:aveo AND ano:2010',
         'fl': 'id,marca,modelo,ano,version,puertas',
         'wt': 'json',
-        'rows': '10',
+        'rows': '1000',
         'indent': 'false'
     }
 
