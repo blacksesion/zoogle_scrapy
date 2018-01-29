@@ -91,11 +91,12 @@ class SolrPipeline(object):
                 if item['precio_det'] is not None:
                     precio = re.sub("\D", "", item['precio_det'])
                     item['precio'] = {'add': precio if precio is not '' else 0}
-                    item['precio_hoy'] = {"set": precio if precio is not '' else 0}
+                    item['precio_hoy'] = {'set': precio if precio is not '' else 0}
                 item['precio_det'] = None
                 item['url'] = None
-        item['fecha_creacion'] = {'add': 'NOW'}
-        item['fecha_precio'] = {'add': 'NOW'}
+        if spider.name is not 'update-version':
+            item['fecha_creacion'] = {'add': 'NOW'}
+            item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
         self.counter += 1
         filename = str(spider.name) + '_' + str(today) + '_' + str(self.counter) + '.json'
@@ -106,7 +107,6 @@ class SolrPipeline(object):
         self.file.write(line)
         self.file.close()
         command_str_post = self.post_command_str % filename
-
         if not (check_call(command_str_post, shell=True)):
             print 'Success'
 

@@ -18,6 +18,7 @@ class ChileautosItem(Item):
     marca = Field()
     modelo = Field()
     version = Field()
+    version_sii = Field()
     precio = Field()
     precio_hoy = Field()
     kilometros = Field()
