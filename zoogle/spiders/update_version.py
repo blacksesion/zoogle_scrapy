@@ -79,8 +79,11 @@ class UpdateVersionSpider(scrapy.Spider):
                     puertas = item['puertas'] if 'puertas' in item else None
                     version_sii = self.get_version_sii(anuncio_id, version, marca, modelo, ano, puertas)
                     if version_sii is None:
-                        print "sin version SII \n Omitiendo..."
-                        pass
+                        print "sin version SII"
+                        anuncio = ChileautosItem()
+                        anuncio['id'] = anuncio_id
+                        anuncio['version_sii'] = {'set': 'Otro'}
+                        yield anuncio
                     else:
                         print "version SII:" + version_sii + "\n"
                         anuncio = ChileautosItem()
