@@ -86,12 +86,6 @@ class SolrPipeline(object):
                 if item['kilometros_det'] is not None:
                     kilom = re.sub("\D", "", item['kilometros_det'])
                     item['kilometros'] = kilom if kilom is not '' else 0
-                if item['puertas_det'] is not None:
-                    puertas = re.sub("\D", "", item['puertas_det'])
-                    item['puertas'] = puertas if puertas is not '' else 0
-                if item['pasajeros_det'] is not None:
-                    pasaj = re.sub("\D", "", item['pasajeros_det'])
-                    item['pasajeros'] = pasaj if pasaj is not '' else 0
                 if item['ano'] is not None:
                     ano = re.sub("\D", "", item['ano'])
                     item['ano'] = ano if ano is not '' else 0
