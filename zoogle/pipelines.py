@@ -49,10 +49,10 @@ class SolrPipeline(object):
         self.post_command_str = 'curl "http://localhost:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
         self.collection = '/solr/zoogle/update'
         self.counter = 0
-        self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl', 'yapo.cl', 'www.yapo.cl']
+        self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl', 'yapo.cl', 'www.yapo.cl', 'avender.cl', 'www.avender.cl', 'amotor.cl', 'www.amotor.cl']
 
     def process_item(self, item, spider):
-        if spider.name == 'chileautos' or spider.name == 'chileautos-lazy':
+        if spider.name == 'chileautos' or spider.name == 'chileautos-lazy' or spider.name == 'amotor':
             if item['vendido'] is None:
                 item['version'] = item['version_det'] if item['version_det'] is not None else None
                 if item['version'] is None:
