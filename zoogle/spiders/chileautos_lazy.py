@@ -70,13 +70,15 @@ class ChileautosLazySpider(scrapy.Spider):
     def parse_thumb(self, response):
         hxs = scrapy.Selector(response)
         url = response.url
+        car_id = re.sub("\?", "", re.search("(\d+)\?", url).group(0))
 
         self.log('url: %s' % url)
         fields = hxs.xpath("//div[@class='l-content__details-main col-xs-12 col-sm-8']")
 
         anuncio = ChileautosItem()
         if not fields:
-            anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
+            # anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
+            anuncio['id'] = "ca_" + car_id
             anuncio['url'] = url
             anuncio['vendido'] = {'add': 'NOW'}
         else:
@@ -85,7 +87,8 @@ class ChileautosLazySpider(scrapy.Spider):
                 Carga de datos generales
                 '''
                 anuncio['vendido'] = None
-                anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
+                # anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
+                anuncio['id'] = "ca_" + car_id
                 anuncio['url'] = url
                 anuncio['header_nombre'] = ''.join(field.xpath('h1/text()').extract()).strip()
                 anuncio['fecha_publicacion'] = {'add': ''.join(
@@ -153,7 +156,7 @@ class ChileautosLazySpider(scrapy.Spider):
                 anuncio['contact_seller_url'] = self.domain_url + seller_link
                 anuncio['contact_name'] = ''.join(field.xpath(
                     '//tr[td/text()="Contacto"]/td[2]/text()').extract()).strip()
-                anuncio['contact_number'] = ''.join(field.xpath(
+                anuncio['contact_number'] = ', '.join(field.xpath(
                     '//td[@id="phone"]/p/text()').extract()).strip()
                 anuncio['contact_address'] = ''.join(field.xpath(
                     '//tr[td/text()="' + unicode('Dirección', 'utf-8') + '"]/td[2]/text()').extract()).strip()
