@@ -5,10 +5,9 @@ import sys
 import urllib
 import urllib2
 import scrapy
+import zoogle.MysqlConnector
 from datetime import datetime
 from zoogle.items import ChileautosItem
-from mysql import connector
-from zoogle.settings import DB_CONFIG
 from scrapy import signals
 from scrapy.xlib.pydispatch import dispatcher
 
@@ -48,7 +47,8 @@ class UpdateVersionSpider(scrapy.Spider):
         self.base_url = service_solr
         self.collection = '/solr/' + solr_core + '/select'
         self.solr_url = self.base_url + self.collection
-        self.cnx = connector.connect(**DB_CONFIG)
+        # self.cnx = connector.connect(**DB_CONFIG)
+        self.cnx = zoogle.MysqlConnector.get_connection()
 
     def spider_closed(self, spider):
         self.cnx.close()
