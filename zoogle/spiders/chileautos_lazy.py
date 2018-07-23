@@ -23,11 +23,9 @@ class ChileautosLazySpider(scrapy.Spider):
     allowed_domains = ["www.chileautos.cl"]
     domain_url = "https://www.chileautos.cl"
     base_url = "https://www.chileautos.cl/autos/busqueda?s=%s&l=%s"
-    # pages_number = 1500
-    pages_number = 1
+    pages_number = 1500
     start_page = 1
-    # item_x_page = 60
-    item_x_page = 2
+    item_x_page = 60
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
     file_pages_path = Path("file_pages_chileautos.txt")
