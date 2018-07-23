@@ -23,9 +23,11 @@ class ChileautosLazySpider(scrapy.Spider):
     allowed_domains = ["www.chileautos.cl"]
     domain_url = "https://www.chileautos.cl"
     base_url = "https://www.chileautos.cl/autos/busqueda?s=%s&l=%s"
-    pages_number = 1500
-    start_page = 0
-    item_x_page = 60
+    # pages_number = 1500
+    pages_number = 1
+    start_page = 1
+    # item_x_page = 60
+    item_x_page = 2
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
     file_pages_path = Path("file_pages_chileautos.txt")
@@ -62,7 +64,8 @@ class ChileautosLazySpider(scrapy.Spider):
         for item in thumbs:
             link = ''.join(item.xpath("a/@href").extract())
             if link is not None and link is not "":
-                request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
+                #request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
+                request = scrapy.Request('https://www.chileautos.cl/auto/usado/details/CL-AD-7095378?s=20', callback=self.parse_thumb)
                 yield request
             else:
                 print "Link no existe\n"
@@ -143,7 +146,27 @@ class ChileautosLazySpider(scrapy.Spider):
                     anuncio['modelo'] = decoded['modelo']
                 if unicode('año', 'utf-8') in decoded:
                     anuncio['ano'] = decoded[unicode('año', 'utf-8')]
-                    # print anuncio
+
+                '''
+                Carga de contacto
+                '''
+                anuncio['contact_seller'] = ''.join(field.xpath(
+                    '//tr[td/text()="Vendedor"]/td[2]/a/text()').extract()).strip()
+                seller_link = ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())
+                anuncio['contact_seller_url'] = self.domain_url + seller_link
+                anuncio['contact_name'] = ''.join(field.xpath(
+                    '//tr[td/text()="Contacto"]/td[2]/text()').extract()).strip()
+                anuncio['contact_number'] = ''.join(field.xpath(
+                    '//td[@id="phone"]/p/text()').extract()).strip()
+                anuncio['contact_address'] = ''.join(field.xpath(
+                    '//tr[td/text()="' + unicode('Dirección', 'utf-8') + '"]/td[2]/text()').extract()).strip()
+                anuncio['contact_comuna'] = ''.join(field.xpath(
+                    '//tr[td/text()="Comuna"]/td[2]/text()').extract()).strip()
+                anuncio['contact_city'] = ''.join(field.xpath(
+                    '//tr[td/text()="Ciudad"]/td[2]/text()').extract()).strip()
+                anuncio['contact_region'] = ''.join(field.xpath(
+                    '//tr[td/text()="' + unicode('Región', 'utf-8') + '"]/td[2]/text()').extract()).strip()
+
         yield anuncio
 
     def quit(self):

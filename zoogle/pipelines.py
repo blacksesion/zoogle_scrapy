@@ -72,6 +72,9 @@ class SolrPipeline(object):
                 if item['pasajeros_det'] is not None:
                     pasaj = re.sub("\D", "", item['pasajeros_det'])
                     item['pasajeros'] = pasaj if pasaj is not '' else 0
+                if item['contact_seller'] is not None:
+                    seller = re.sub("\W", " ", item['contact_seller'])
+                    item['tipo_anuncio'] = 'PROFESIONAL' if seller is not '' else ''
         if spider.name == 'amotor':
             if item['vendido'] is None:
                 item['version'] = item['version_det'] if item['version_det'] is not None else None

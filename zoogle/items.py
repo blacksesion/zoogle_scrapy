@@ -32,6 +32,7 @@ class ChileautosItem(Item):
     fecha_creacion = Field()
     fecha_edicion = Field()
     fecha_precio = Field()
+    img_url = Field()
 
     # detalles destacados
     vehiculo_det = Field()
@@ -162,6 +163,17 @@ class ChileautosItem(Item):
     # especificaciones - transmision
     # especificaciones - version
     # TODO: completar con los atributos faltantes
+
+    # DATOS DE CONTACTO
+    contact_seller = Field()
+    contact_seller_url = Field()
+    contact_name = Field()
+    contact_number = Field()
+    contact_address = Field()
+    contact_comuna = Field()
+    contact_city = Field()
+    contact_region = Field()
+
 
 
 class ZoogleItem(Item):
