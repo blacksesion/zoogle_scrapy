@@ -62,8 +62,7 @@ class ChileautosLazySpider(scrapy.Spider):
         for item in thumbs:
             link = ''.join(item.xpath("a/@href").extract())
             if link is not None and link is not "":
-                #request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
-                request = scrapy.Request('https://www.chileautos.cl/auto/usado/details/CL-AD-7095378?s=20', callback=self.parse_thumb)
+                request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
                 yield request
             else:
                 print "Link no existe\n"
