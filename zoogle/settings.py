@@ -45,8 +45,8 @@ LOG_ENABLED = True
 LOG_ENCODING = 'utf-8'
 ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
 
-# DB_HOST = "localhost"
-DB_HOST = "201.148.107.174"
+DB_HOST = "localhost"
+# DB_HOST = "201.148.107.174"
 DB_USER = "zoogle_user"
 DB_PASSWD = "admin1234"
 DB_DBNAME = "zoogle"
