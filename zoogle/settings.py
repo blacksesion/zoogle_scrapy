@@ -29,6 +29,8 @@ DOWNLOADER_MIDDLEWARES = {
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
+    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
+    'zoogle.middlewares.ProxyMiddleware': 100
 }
 
 CONCURRENT_REQUESTS = 4
@@ -57,3 +59,8 @@ DB_CONFIG = {
     'raise_on_warnings': True,
     'use_pure': False,
 }
+
+PROXY_POOL = [
+    'http://190.101.137.157:8080',
+    # 'http://190.151.94.45:8080'
+]

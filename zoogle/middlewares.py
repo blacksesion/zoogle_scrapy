@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # author = 'BlackSesion'
-
+import base64
 import random
 from scrapy.conf import settings
 
@@ -13,5 +13,16 @@ class RandomUserAgentMiddleware(object):
 
 
 class ProxyMiddleware(object):
+    # overwrite process request
     def process_request(self, request, spider):
-        request.meta['proxy'] = settings.get('HTTP_PROXY')
+        # Set the location of the proxy
+        # request.meta['proxy'] = "http://190.101.137.157:8080"
+        if settings.get('PROXY_POOL'):
+            request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
+
+        # Use the following lines if your proxy requires authentication
+        proxy_user_pass = "USERNAME:PASSWORD"
+        # setup basic authentication for the proxy
+        encoded_user_pass = base64.encodestring(proxy_user_pass)
+        # request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass
+        print request.meta['proxy']
