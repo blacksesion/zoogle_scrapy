@@ -45,8 +45,8 @@ LOG_ENABLED = True
 LOG_ENCODING = 'utf-8'
 ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
 
-DB_HOST = "localhost"
-# DB_HOST = "201.148.107.174"
+# DB_HOST = "localhost"
+DB_HOST = "201.148.107.174"
 DB_USER = "zoogle_user"
 DB_PASSWD = "admin1234"
 DB_DBNAME = "zoogle"
@@ -61,10 +61,15 @@ DB_CONFIG = {
 }
 
 PROXY_POOL = [
-    'http://190.101.137.157:8080',
-    'http://181.75.1.250:8080',
-    'http://200.27.91.117:8080',
-    'http://186.67.67.10:8080',
-    'http://200.54.9.34:8080',
-    'http://190.151.50.114:8080'
+    'http://190.82.70.109:80',
+    'https://190.215.88.252:80',
+    'https://164.77.182.34:80',
+    'https://186.34.63.231:80',
+    'http://186.10.80.226:80',
+    'https://200.113.104.126:80',
+    'http://190.46.134.150:80',
+    'http://186.103.239.190:80',
+    'https://186.64.123.197:80',
+    'https://190.13.164.162:80',
+    'https://200.68.25.75:80'
 ]
