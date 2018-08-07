@@ -9,7 +9,7 @@ import zoogle.MysqlConnector
 from datetime import datetime
 from zoogle.items import ChileautosItem
 from scrapy import signals
-from scrapy.xlib.pydispatch import dispatcher
+# from scrapy.xlib.pydispatch import dispatcher
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -36,9 +36,15 @@ class UpdateVersionSpider(scrapy.Spider):
     url_api_rest = ""
     cnx = None
 
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(UpdateVersionSpider, cls).from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_closed, signals.spider_closed)
+        return spider
+
     def __init__(self, *args, **kwargs):
         super(UpdateVersionSpider, self).__init__(*args, **kwargs)
-        dispatcher.connect(self.spider_closed, signals.spider_closed)
+        # dispatcher.connect(self.spider_closed, signals.spider_closed)
         # service_solr = 'http://201.148.107.174:8983'
         service_solr = 'http://localhost:8983'
         solr_core = 'zoogle'
