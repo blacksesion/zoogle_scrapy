@@ -15,7 +15,7 @@ class RandomUserAgentMiddleware(object):
 class ProxyMiddleware(object):
     # overwrite process request
     def process_request(self, request, spider):
-        if spider.name is not 'chileautos-lazy':
+        if spider.name != "chileautos-lazy":
             # Set the location of the proxy
             # request.meta['proxy'] = "http://190.101.137.157:8080"
             if settings.get('PROXY_POOL'):
