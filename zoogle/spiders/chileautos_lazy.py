@@ -4,6 +4,9 @@ import codecs
 import json
 import re
 import sys
+import traceback
+import urllib
+import urllib2
 
 import demjson as demjson
 import scrapy
@@ -12,7 +15,7 @@ import datetime
 from pathlib import Path
 
 from zoogle.items import ChileautosItem
-from scrapy.exceptions import CloseSpider
+from scrapy.exceptions import CloseSpider, IgnoreRequest
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -23,30 +26,66 @@ class ChileautosLazySpider(scrapy.Spider):
     allowed_domains = ["www.chileautos.cl"]
     domain_url = "https://www.chileautos.cl"
     base_url = "https://www.chileautos.cl/autos/busqueda?s=%s&l=%s"
-    pages_number = 1500
+    solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
+    pages_limit = 1500
     start_page = 1
     item_x_page = 60
+    only_news = True  # default False
+    url_skip = set()
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
     file_pages_path = Path("file_pages_chileautos.txt")
 
-    def __init__(self, init_page=None, deep=None, num_items=None, *args, **kwargs):
+    def __init__(self, page=None, deep=None, items=None, new=None, *args, **kwargs):
         super(ChileautosLazySpider, self).__init__(*args, **kwargs)
         file_pages = None
-        if init_page is not None:
-            self.start_page = int(init_page)
+        if page is not None:
+            self.start_page = int(page)
         if deep is not None:
-            self.pages_number = int(deep)
-        if num_items is not None:
-            self.item_x_page = int(num_items)
+            self.pages_limit = int(deep)
+        if items is not None:
+            self.item_x_page = int(items)
+        if new is not None:
+            self.only_news = True
         if self.file_pages_path.is_file():
             archivo = codecs.open("file_pages_chileautos.txt", 'r')
             file_pages = archivo.read()
             archivo.close()
-        if file_pages is not "" and file_pages is not None:
-            self.pages_number = int(file_pages)
-        self.start_urls = [self.base_url % (page, self.item_x_page) for page in
-                           xrange(self.start_page * self.item_x_page, self.pages_number * self.item_x_page, self.item_x_page)]
+        if file_pages is not "" and file_pages is not None and deep is None:
+            self.pages_limit = int(file_pages)
+        initial_item = self.start_page * self.item_x_page
+        end_item = initial_item + (self.pages_limit * self.item_x_page)
+        self.start_urls = [self.base_url % (page, self.item_x_page) for page in xrange(initial_item, end_item, self.item_x_page)]
+        if self.only_news is True:
+            params = {'q': 'url:* AND id:ca_* -vendido:*',
+                      # 'fq': 'date:' + date_str,
+                      'fl': 'url',
+                      'wt': 'json',
+                      # 'rows': '50',
+                      'rows': '20000',
+                      'indent': 'false'}
+            params_encoded = urllib.urlencode(params)
+            request = urllib2.Request(self.solr_base_url % params_encoded)
+            try:
+                response = urllib2.urlopen(request)
+            except:
+                response = None
+                print 'params', params
+                print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+
+            if response is not None:
+                jeison = response.read()
+                data = json.loads(jeison)
+                print 'Resultados: ', data['response']['numFound']
+                data_json = data['response']['docs']
+                try:
+                    if len(data_json) > 0:
+                        self.url_skip.update(re.search('^(.*?)(?=\?|$)', x['url']).group(0) for x in data_json)
+                        # print self.url_skip
+                    else:
+                        print "No hay resultados"
+                except:
+                    print "Error sending to WS:", traceback.format_exc()
 
     def parse(self, response):
         hxs = scrapy.Selector(response)
@@ -61,25 +100,28 @@ class ChileautosLazySpider(scrapy.Spider):
             self.quit()
         for item in thumbs:
             link = ''.join(item.xpath("a/@href").extract())
-            if link is not None and link is not "":
-                request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
-                yield request
+            clean_url = re.search('^(.*?)(?=\?|$)', link).group(0)
+            if clean_url in self.url_skip:
+                print "ignorada url: " + clean_url + "\n"
             else:
-                print "Link no existe\n"
+                if link is not None and link is not "":
+                    request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
+                    yield request
+                else:
+                    print "Link no existe\n"
 
     def parse_thumb(self, response):
         hxs = scrapy.Selector(response)
         url = response.url
+        clean_url = re.search('^(.*?)(?=\?|$)', response.url).group(0)
         car_id = re.sub("\?", "", re.search("(\d+)\?", url).group(0))
-
-        self.log('url: %s' % url)
+        self.log('url: %s' % clean_url)
         fields = hxs.xpath("//div[@class='l-content__details-main col-xs-12 col-sm-8']")
 
         anuncio = ChileautosItem()
         if not fields:
-            # anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
             anuncio['id'] = "ca_" + car_id
-            anuncio['url'] = url
+            anuncio['url'] = clean_url
             anuncio['vendido'] = {'add': 'NOW'}
         else:
             for field in fields:
@@ -89,7 +131,7 @@ class ChileautosLazySpider(scrapy.Spider):
                 anuncio['vendido'] = None
                 # anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
                 anuncio['id'] = "ca_" + car_id
-                anuncio['url'] = url
+                anuncio['url'] = clean_url
                 anuncio['header_nombre'] = ''.join(field.xpath('h1/text()').extract()).strip()
                 anuncio['fecha_publicacion'] = {'add': ''.join(
                     field.xpath('//div[@class="published-date"]/span/text()').extract()).strip()}
