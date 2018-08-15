@@ -35,7 +35,7 @@ class ProxyMiddleware(object):
 #                request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
 
             print "\n Proxy usado: " + request.meta['proxy'] + "\n"
-        spider.log('Proxy : %s' % request.meta['proxy'])
+            spider.log('Proxy : %s' % request.meta['proxy'])
 
 
 class IgnoreDuplicates():
