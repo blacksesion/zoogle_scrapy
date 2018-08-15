@@ -33,16 +33,16 @@ DOWNLOADER_MIDDLEWARES = {
     'zoogle.middlewares.ProxyMiddleware': 100
 }
 
-CONCURRENT_REQUESTS = 4
-CONCURRENT_REQUESTS_PER_DOMAIN = 2
-DOWNLOAD_DELAY = 1.5
+#CONCURRENT_REQUESTS = 4
+#CONCURRENT_REQUESTS_PER_DOMAIN = 2
+#DOWNLOAD_DELAY = 1.5
 
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
 
-LOG_FILE = 'log_' + str(datetime.date.today()) + '.log'
-LOG_ENABLED = True
-LOG_ENCODING = 'utf-8'
+#LOG_FILE = 'log_' + str(datetime.date.today()) + '.log'
+#LOG_ENABLED = True
+#LOG_ENCODING = 'utf-8'
 ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
 
 # DB_HOST = "localhost"
@@ -64,3 +64,5 @@ PROXY_POOL = [
     'https://190.215.88.252:80',
     'https://186.34.63.231:80'
 ]
+
+HTTP_PROXY = 'http://127.0.0.1:8118'

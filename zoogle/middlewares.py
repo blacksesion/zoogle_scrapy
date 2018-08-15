@@ -2,7 +2,12 @@
 # author = 'BlackSesion'
 import base64
 import random
+from scrapy.exceptions import IgnoreRequest
 from scrapy.conf import settings
+from toripchanger import TorIpChanger
+
+# A Tor IP will be reused only after 10 different IPs were used.
+ip_changer = TorIpChanger(reuse_threshold=10)
 
 
 class RandomUserAgentMiddleware(object):
@@ -14,16 +19,38 @@ class RandomUserAgentMiddleware(object):
 
 class ProxyMiddleware(object):
     # overwrite process request
+    _requests_count = 0
+    _requests_count_x_ip = 10
+
     def process_request(self, request, spider):
         if spider.name != "chileautos-lazy":
-            # Set the location of the proxy
-            # request.meta['proxy'] = "http://190.101.137.157:8080"
-            if settings.get('PROXY_POOL'):
-                request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
+            # configuracion para tor
+            self._requests_count += 1
+            if self._requests_count > self._requests_count_x_ip:
+                self._requests_count = 0
+                ip_changer.get_new_ip()
+            request.meta['proxy'] = settings.get('HTTP_PROXY')
+            # configuracion para pool de proxys
+#            if settings.get('PROXY_POOL'):
+#                request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
 
-            # Use the following lines if your proxy requires authentication
-            proxy_user_pass = "USERNAME:PASSWORD"
-            # setup basic authentication for the proxy
-            encoded_user_pass = base64.encodestring(proxy_user_pass)
-            # request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass
             print "\n Proxy usado: " + request.meta['proxy'] + "\n"
+        spider.log('Proxy : %s' % request.meta['proxy'])
+
+
+class IgnoreDuplicates():
+    def __init__(self):
+        self.crawled_urls = set()
+
+#        with sqlite3.connect('C:\dev\scrapy.db') as conn:
+#            cur = conn.cursor()
+#            cur.execute("""SELECT url FROM CrawledURLs""")
+#            self.crawled_urls.update(x[0] for x in cur.fetchall())
+
+        print self.crawled_urls
+
+    def process_request(self, request, spider):
+        if request.url in self.crawled_urls:
+            raise IgnoreRequest()
+        else:
+            return None
