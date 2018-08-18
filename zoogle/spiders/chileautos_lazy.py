@@ -73,12 +73,12 @@ class ChileautosLazySpider(scrapy.Spider):
             if response is not None:
                 jeison = response.read()
                 data = json.loads(jeison)
-                print 'Resultados: ', data['response']['numFound'] + "\n"
+                print 'Resultados: ', data['response']['numFound']
                 data_json = data['response']['docs']
                 try:
                     if len(data_json) > 0:
                         self.url_skip.update(re.search('^(.*?)(?=\?|$)', x['url']).group(0) for x in data_json)
-                        # print self.url_skip
+                        print self.url_skip
                     else:
                         print "No hay resultados"
                 except:
@@ -99,7 +99,7 @@ class ChileautosLazySpider(scrapy.Spider):
             link = ''.join(item.xpath("a/@href").extract())
             clean_url = re.search('^(.*?)(?=\?|$)', link).group(0)
             if clean_url in self.url_skip:
-                print "ignorada url: " + clean_url + "\n"
+                print "ignorada url: " + clean_url
             else:
                 if link is not None and link is not "":
                     request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
