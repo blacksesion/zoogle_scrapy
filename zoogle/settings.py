@@ -48,7 +48,7 @@ DOWNLOADER_MIDDLEWARES = {
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
-#    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 210,
+    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 210,
     'zoogle.middlewares.ProxyMiddleware': 200,
 #    'zoogle.middlewares.IgnoreDuplicates': 100
 }
@@ -80,9 +80,9 @@ DB_CONFIG = {
     'use_pure': False,
 }
 
+TOR_PROXY = True
+
 PROXY_POOL = [
-    'https://186.34.63.231:80',
-    'https://186.64.123.197:80',
     'https://164.77.182.34:80'
 ]
 

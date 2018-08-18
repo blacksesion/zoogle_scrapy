@@ -26,15 +26,14 @@ class RandomUserAgentMiddleware(object):
 
 class ProxyMiddleware(object):
     # overwrite process request
-    _tor_proxy = False
     _requests_count = 0
     _requests_count_x_ip = 100
 
     def process_request(self, request, spider):
         print 'iniciando proxy...'
-        if spider.name != "chileautos-lazy":
+        if spider.name == 'chileautos-lazy':
             print 'spider Chileautos-'
-            if self._tor_proxy is True:
+            if settings.get('TOR_PROXY') is True:
                 print '... usando TOR...'
                 # configuracion para tor
                 self._requests_count += 1
