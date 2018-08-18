@@ -128,12 +128,11 @@ class SolrPipeline(object):
         self.file.close()
         command_str_post = self.post_command_str % filename
         if not (check_call(command_str_post, shell=True)):
-            print 'Success'
-
+            print 'guardado en SOLR'
         command_remove_file = 'rm -f %s' % filename
         try:
             if not (check_call(command_remove_file, shell=True)):
-                print 'Success removed'
+                print 'Archivo JSON temporal eliminado'
         except:
-            print 'Error removing file'
+            print 'Error removing temporal JSON'
         #return item

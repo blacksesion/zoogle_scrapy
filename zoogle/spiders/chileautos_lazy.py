@@ -78,7 +78,7 @@ class ChileautosLazySpider(scrapy.Spider):
                 try:
                     if len(data_json) > 0:
                         self.url_skip.update(re.search('^(.*?)(?=\?|$)', x['url']).group(0) for x in data_json)
-                        print self.url_skip
+                        # print self.url_skip
                     else:
                         print "No hay resultados"
                 except:

@@ -48,7 +48,7 @@ DOWNLOADER_MIDDLEWARES = {
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
     'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
-    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 210,
+#    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 210,
     'zoogle.middlewares.ProxyMiddleware': 200,
 #    'zoogle.middlewares.IgnoreDuplicates': 100
 }

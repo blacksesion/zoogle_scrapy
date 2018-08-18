@@ -31,20 +31,26 @@ class ProxyMiddleware(object):
     _requests_count_x_ip = 100
 
     def process_request(self, request, spider):
+        print 'iniciando proxy...'
         if spider.name != "chileautos-lazy":
+            print 'spider Chileautos-'
             if self._tor_proxy is True:
+                print '... usando TOR...'
                 # configuracion para tor
                 self._requests_count += 1
                 if self._requests_count > self._requests_count_x_ip:
+                    print '... renovando ip :'
                     self._requests_count = 0
                     ip_changer.get_new_ip()
+                    print ip_changer.get_current_ip()
                 request.meta['proxy'] = settings.get('HTTP_PROXY')
             else:
                 # configuracion para pool de proxys
+                print '... usando LISTA...'
                 if settings.get('PROXY_POOL'):
                     request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
 
-            print "\n Proxy usado: " + request.meta['proxy'] + "\n"
+            print 'Proxy usado:', request.meta['proxy']
             spider.log('Proxy : %s' % request.meta['proxy'])
 
 
