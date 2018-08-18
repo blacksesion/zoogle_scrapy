@@ -7,15 +7,12 @@ import sys
 import traceback
 import urllib
 import urllib2
-
 import demjson as demjson
 import scrapy
 import datetime
-
 from pathlib import Path
-
 from zoogle.items import ChileautosItem
-from scrapy.exceptions import CloseSpider, IgnoreRequest
+from scrapy.exceptions import CloseSpider
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -30,7 +27,7 @@ class ChileautosLazySpider(scrapy.Spider):
     pages_limit = 1500
     start_page = 1
     item_x_page = 60
-    only_news = True  # default False
+    only_news = False  # default False
     url_skip = set()
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
@@ -76,7 +73,7 @@ class ChileautosLazySpider(scrapy.Spider):
             if response is not None:
                 jeison = response.read()
                 data = json.loads(jeison)
-                print 'Resultados: ', data['response']['numFound']
+                print 'Resultados: ', data['response']['numFound'] + "\n"
                 data_json = data['response']['docs']
                 try:
                     if len(data_json) > 0:

@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 # author = 'BlackSesion'
 import base64
+import json
 import random
+import re
+import traceback
+import urllib
+import urllib2
+
+import sys
 from scrapy.exceptions import IgnoreRequest
 from scrapy.conf import settings
 from toripchanger import TorIpChanger
@@ -19,38 +26,71 @@ class RandomUserAgentMiddleware(object):
 
 class ProxyMiddleware(object):
     # overwrite process request
+    _tor_proxy = False
     _requests_count = 0
-    _requests_count_x_ip = 10
+    _requests_count_x_ip = 100
 
     def process_request(self, request, spider):
         if spider.name != "chileautos-lazy":
-            # configuracion para tor
-            self._requests_count += 1
-            if self._requests_count > self._requests_count_x_ip:
-                self._requests_count = 0
-                ip_changer.get_new_ip()
-            request.meta['proxy'] = settings.get('HTTP_PROXY')
-            # configuracion para pool de proxys
-#            if settings.get('PROXY_POOL'):
-#                request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
+            if self._tor_proxy is True:
+                # configuracion para tor
+                self._requests_count += 1
+                if self._requests_count > self._requests_count_x_ip:
+                    self._requests_count = 0
+                    ip_changer.get_new_ip()
+                request.meta['proxy'] = settings.get('HTTP_PROXY')
+            else:
+                # configuracion para pool de proxys
+                if settings.get('PROXY_POOL'):
+                    request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
 
             print "\n Proxy usado: " + request.meta['proxy'] + "\n"
             spider.log('Proxy : %s' % request.meta['proxy'])
 
 
-class IgnoreDuplicates():
+class IgnoreDuplicates(object):
+    _solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
+    _url_skip = set()
+
     def __init__(self):
-        self.crawled_urls = set()
+        print "iniciando ignorar duplicados"
+        params = {'q': 'url:* AND id:ca_* -vendido:*',
+                  # 'fq': 'date:' + date_str,
+                  'fl': 'url',
+                  'wt': 'json',
+                  # 'rows': '50',
+                  'rows': '20000',
+                  'indent': 'false'}
+        params_encoded = urllib.urlencode(params)
+        request = urllib2.Request(self._solr_base_url % params_encoded)
+        try:
+            response = urllib2.urlopen(request)
+        except:
+            response = None
+            print 'params', params
+            print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
 
-#        with sqlite3.connect('C:\dev\scrapy.db') as conn:
-#            cur = conn.cursor()
-#            cur.execute("""SELECT url FROM CrawledURLs""")
-#            self.crawled_urls.update(x[0] for x in cur.fetchall())
-
-        print self.crawled_urls
+        if response is not None:
+            jeison = response.read()
+            data = json.loads(jeison)
+            print 'Resultados: ', data['response']['numFound']
+            data_json = data['response']['docs']
+            try:
+                if len(data_json) > 0:
+                    self._url_skip.update(re.search('^(.*?)(?=\?|$)', x['url']).group(0) for x in data_json)
+                    # print self.url_skip
+                else:
+                    print "No hay resultados"
+            except:
+                print "Error sending to WS:", traceback.format_exc()
 
     def process_request(self, request, spider):
-        if request.url in self.crawled_urls:
+        print spider.name
+        print "verificando repetido"
+        clean_url = re.search('^(.*?)(?=\?|$)', request.url).group(0)
+        if clean_url in self._url_skip:
+            print "ignorada url:", clean_url
             raise IgnoreRequest()
         else:
+            print "nueva url:", clean_url
             return None
