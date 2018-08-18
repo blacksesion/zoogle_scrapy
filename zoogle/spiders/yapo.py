@@ -99,6 +99,8 @@ class YapoSpider(scrapy.Spider):
                     anuncio['ano'] = decoded["year"]
                 if "version" in decoded:
                     anuncio['version_det'] = decoded["version"]
+                else:
+                    anuncio['version_det'] = None
                 if "price" in decoded:
                     anuncio['precio_det'] = decoded["price"]
                 if "description" in decoded:
