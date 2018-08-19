@@ -33,6 +33,12 @@ class ChileautosLazySpider(scrapy.Spider):
     utc_date = date + 'T03:00:00Z'
     file_pages_path = Path("file_pages_chileautos.txt")
 
+    custom_settings = {
+        'CONCURRENT_REQUESTS': 2,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+        'DOWNLOAD_DELAY': 0.5
+    }
+
     def __init__(self, page=None, deep=None, items=None, new=None, *args, **kwargs):
         super(ChileautosLazySpider, self).__init__(*args, **kwargs)
         file_pages = None
@@ -59,7 +65,7 @@ class ChileautosLazySpider(scrapy.Spider):
                       'fl': 'url',
                       'wt': 'json',
                       # 'rows': '50',
-                      'rows': '20000',
+                      'rows': '100000',
                       'indent': 'false'}
             params_encoded = urllib.urlencode(params)
             request = urllib2.Request(self.solr_base_url % params_encoded)
