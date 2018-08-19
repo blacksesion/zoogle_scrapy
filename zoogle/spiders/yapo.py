@@ -60,11 +60,8 @@ class YapoSpider(scrapy.Spider):
             self.quit()
         for item in thumbs:
             price = ''.join(item.xpath("node()/span[@class='price']/text()").extract())
-            print 'precio:',price
             if price is not None and price is not "":
-                print 'tiene precio'
                 link = ''.join(item.xpath("node()/a[@class='title']/@href").extract())
-                print link
                 if link is not None and link is not "":
                     request = scrapy.Request(link, callback=self.parse_thumb)
                     yield request
