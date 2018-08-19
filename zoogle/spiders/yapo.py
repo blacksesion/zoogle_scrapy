@@ -59,12 +59,20 @@ class YapoSpider(scrapy.Spider):
         if len(thumbs) < 1:
             self.quit()
         for item in thumbs:
-            link = ''.join(item.xpath("node()/a[@class='title']/@href").extract())
-            if link is not None and link is not "":
-                request = scrapy.Request(link, callback=self.parse_thumb)
-                yield request
+            price = ''.join(item.xpath("node()/span[@class='price']/text()").extract())
+            print 'precio:',price
+            if price is not None and price is not "":
+                print 'tiene precio'
+                link = ''.join(item.xpath("node()/a[@class='title']/@href").extract())
+                print link
+                if link is not None and link is not "":
+                    request = scrapy.Request(link, callback=self.parse_thumb)
+                    yield request
+                else:
+                    print 'link no existe'
             else:
-                print "Link no existe\n"
+                print 'anuncio sin precio'
+
 
     def parse_thumb(self, response):
         hxs = scrapy.Selector(response)
@@ -79,6 +87,7 @@ class YapoSpider(scrapy.Spider):
             anuncio['id'] = "yapo_" + anuncio_id
             anuncio['url'] = url
             anuncio['vendido'] = {'add': 'NOW'}
+            yield anuncio
         else:
             for field in fields:
                 '''
@@ -89,47 +98,51 @@ class YapoSpider(scrapy.Spider):
                 py_obj = demjson.decode(data)
                 data_obj = json.dumps(py_obj)
                 decoded = json.loads(data_obj)
-                if "ad_id" in decoded:
-                    anuncio['id'] = "yapo_" + decoded['ad_id']
-                if "brand" in decoded:
-                    anuncio['marca'] = decoded['brand']
-                if "model" in decoded:
-                    anuncio['modelo'] = decoded['model']
-                if "year" in decoded:
-                    anuncio['ano'] = decoded["year"]
-                if "version" in decoded:
-                    anuncio['version_det'] = decoded["version"]
+                if "model" in decoded and "year" in decoded and "brand" in decoded:
+                    if "ad_id" in decoded:
+                        anuncio['id'] = "yapo_" + decoded['ad_id']
+                    if "brand" in decoded:
+                        anuncio['marca'] = decoded['brand']
+                    if "model" in decoded:
+                        anuncio['modelo'] = decoded['model']
+                    if "year" in decoded:
+                        anuncio['ano'] = decoded["year"]
+                    if "version" in decoded:
+                        anuncio['version_det'] = decoded["version"]
+                    else:
+                        anuncio['version_det'] = None
+                    if "price" in decoded:
+                        anuncio['precio_det'] = decoded["price"]
+                    if "description" in decoded:
+                        anuncio['comentarios'] = decoded["description"]
+                    if "publish_date" in decoded:
+                        anuncio['fecha_publicacion'] = decoded["publish_date"]
+                    if "km" in decoded:
+                        anuncio['kilometros_det'] = decoded["km"]
+                    if "ad_title" in decoded:
+                        anuncio['header_nombre'] = decoded["ad_title"]
+                    if "category_level2" in decoded:
+                        anuncio['categoria'] = decoded["category_level2"]
+                    if "car_type" in decoded:
+                        anuncio['carroceria'] = decoded["car_type"]
+                    if "fuel" in decoded:
+                        anuncio['combustible_det'] = decoded["fuel"]
+                    if "region_level2" in decoded:
+                        anuncio['region_det'] = decoded["region_level2"]
+                    if "region_level3" in decoded:
+                        anuncio['ciudad_det'] = decoded["region_level3"]
+                    if "transmission" in decoded:
+                        anuncio['transmision_det'] = decoded["transmission"]
+                    if anuncio['id'] is None:
+                        anuncio['id'] = "yapo_" + anuncio_id
+                    anuncio['url'] = url
+                    anuncio['tipo_anuncio'] = ''.join(field.xpath(
+                        '//p[@class="name"]/text()').extract()).strip()
+                    anuncio['vendido'] = None
+                    yield anuncio
                 else:
-                    anuncio['version_det'] = None
-                if "price" in decoded:
-                    anuncio['precio_det'] = decoded["price"]
-                if "description" in decoded:
-                    anuncio['comentarios'] = decoded["description"]
-                if "publish_date" in decoded:
-                    anuncio['fecha_publicacion'] = decoded["publish_date"]
-                if "km" in decoded:
-                    anuncio['kilometros_det'] = decoded["km"]
-                if "ad_title" in decoded:
-                    anuncio['header_nombre'] = decoded["ad_title"]
-                if "category_level2" in decoded:
-                    anuncio['categoria'] = decoded["category_level2"]
-                if "car_type" in decoded:
-                    anuncio['carroceria'] = decoded["car_type"]
-                if "fuel" in decoded:
-                    anuncio['combustible_det'] = decoded["fuel"]
-                if "region_level2" in decoded:
-                    anuncio['region_det'] = decoded["region_level2"]
-                if "region_level3" in decoded:
-                    anuncio['ciudad_det'] = decoded["region_level3"]
-                if "transmission" in decoded:
-                    anuncio['transmision_det'] = decoded["transmission"]
-                if anuncio['id'] is None:
-                    anuncio['id'] = "yapo_" + anuncio_id
-                anuncio['url'] = url
-                anuncio['tipo_anuncio'] = ''.join(field.xpath(
-                    '//p[@class="name"]/text()').extract()).strip()
-                anuncio['vendido'] = None
-        yield anuncio
+                    print 'anuncio sin marca, modelo o año'
+        #yield anuncio
 
     def quit(self):
         raise CloseSpider('No hay mas anuncios.')
