@@ -24,7 +24,7 @@ class ChileautosLazySpider(scrapy.Spider):
     domain_url = "https://www.chileautos.cl"
     base_url = "https://www.chileautos.cl/autos/busqueda?s=%s&l=%s"
     solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
-    pages_limit = 1500
+    pages_limit = 15000
     start_page = 1
     item_x_page = 60
     only_news = False  # default False
