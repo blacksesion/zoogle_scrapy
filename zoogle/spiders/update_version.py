@@ -11,7 +11,7 @@ from zoogle.items import ChileautosItem
 from mysql import connector
 from zoogle.settings import DB_CONFIG
 from scrapy import signals
-from scrapy.xlib.pydispatch import dispatcher
+from pydispatch import dispatcher
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

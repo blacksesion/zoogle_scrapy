@@ -43,12 +43,14 @@ USER_AGENT_LIST = [
 ]
 
 DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.CustomClientContextFactory.CustomClientContextFactory'
+# DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.contextfactory.ScrapyClientContextFactory'
+# DOWNLOADER_CLIENTCONTEXTFACTORY = 'scrapy.core.downloader.contextfactory.BrowserLikeContextFactory'
 
 DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'scrapy.spidermiddlewares.referer.RefererMiddleware': True,
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 210,
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
-    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
-    'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
-    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 210,
     'zoogle.middlewares.ProxyMiddleware': 200,
 #    'zoogle.middlewares.IgnoreDuplicates': 100
 }
@@ -80,7 +82,7 @@ DB_CONFIG = {
     'use_pure': False,
 }
 
-TOR_PROXY = True
+TOR_PROXY = False
 
 PROXY_POOL = [
     'https://164.77.182.34:80'
