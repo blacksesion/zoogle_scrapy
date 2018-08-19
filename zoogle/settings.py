@@ -44,7 +44,6 @@ USER_AGENT_LIST = [
 
 DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.CustomClientContextFactory.CustomClientContextFactory'
 # DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.contextfactory.ScrapyClientContextFactory'
-# DOWNLOADER_CLIENTCONTEXTFACTORY = 'scrapy.core.downloader.contextfactory.BrowserLikeContextFactory'
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
@@ -82,7 +81,7 @@ DB_CONFIG = {
     'use_pure': False,
 }
 
-TOR_PROXY = False
+TOR_PROXY = True
 
 PROXY_POOL = [
     'https://164.77.182.34:80'

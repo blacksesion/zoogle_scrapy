@@ -14,7 +14,7 @@ from scrapy.conf import settings
 from toripchanger import TorIpChanger
 
 # A Tor IP will be reused only after 10 different IPs were used.
-ip_changer = TorIpChanger(reuse_threshold=10)
+ip_changer = TorIpChanger(reuse_threshold=100)
 
 
 class RandomUserAgentMiddleware(object):
@@ -30,29 +30,21 @@ class ProxyMiddleware(object):
     _requests_count_x_ip = 100
 
     def process_request(self, request, spider):
-        print 'iniciando proxy...'
         if spider.name == 'chileautos-lazy':
-            print 'spider Chileautos-'
             if settings.get('TOR_PROXY') is True:
-                print '... usando TOR...'
                 # configuracion para tor
                 self._requests_count += 1
                 if self._requests_count > self._requests_count_x_ip:
-                    print '... renovando ip :'
                     self._requests_count = 0
                     ip_changer.get_new_ip()
                     print ip_changer.get_current_ip()
                 request.meta['proxy'] = settings.get('HTTP_PROXY')
             else:
                 # configuracion para pool de proxys
-                print '... usando LISTA...'
                 if settings.get('PROXY_POOL'):
                     request.meta['proxy'] = random.choice(settings.get('PROXY_POOL'))
 
-            print 'Proxy usado:', request.meta['proxy']
-            spider.log('Proxy : %s' % request.meta['proxy'])
-
-
+# aun no implementado (testing)
 class IgnoreDuplicates(object):
     _solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
     _url_skip = set()
