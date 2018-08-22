@@ -83,7 +83,8 @@ class SolrPipeline(object):
                         item['ano'], '').strip()
                     item['version'] = string
                 if item['precio_det'] is not None:
-                    precio = re.sub("\D", "", item['precio_det'])
+                    #precio = re.sub("\D", "", item['precio_det'])
+                    precio = re.search('^(.*?)(?=\?|$)', item['precio_det']).group(0)
                     item['precio'] = {'add': precio if precio is not '' else 0}
                     item['precio_hoy'] = precio if precio is not '' else 0
                 if item['kilometros_det'] is not None:
