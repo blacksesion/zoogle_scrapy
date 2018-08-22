@@ -118,9 +118,11 @@ class ChileautosLazySpider(scrapy.Spider):
 
         anuncio = ChileautosItem()
         if not fields:
-            anuncio['id'] = "ca_" + car_id
+            #anuncio['id'] = "ca_" + car_id
             #anuncio['url'] = clean_url
-            anuncio['vendido'] = {'add': 'NOW'}
+            #anuncio['vendido'] = {'add': 'NOW'}
+            self.log('Anuncio vacio: %s' % clean_url)
+            print fields
         else:
             for field in fields:
                 '''
@@ -209,8 +211,7 @@ class ChileautosLazySpider(scrapy.Spider):
                     '//tr[td/text()="Ciudad"]/td[2]/text()').extract()).strip()
                 anuncio['contact_region'] = ''.join(field.xpath(
                     '//tr[td/text()="' + unicode('Región', 'utf-8') + '"]/td[2]/text()').extract()).strip()
-
-        yield anuncio
+            yield anuncio
 
     def quit(self):
         raise CloseSpider('No hay mas anuncios.')
