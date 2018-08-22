@@ -119,7 +119,7 @@ class ChileautosLazySpider(scrapy.Spider):
         anuncio = ChileautosItem()
         if not fields:
             anuncio['id'] = "ca_" + car_id
-            anuncio['url'] = clean_url
+            #anuncio['url'] = clean_url
             anuncio['vendido'] = {'add': 'NOW'}
         else:
             for field in fields:

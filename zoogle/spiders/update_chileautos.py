@@ -26,7 +26,7 @@ class UpdateChileautosSpider(scrapy.Spider):
     today_str = today.strftime('%Y-%m-%d')
     date_str = '[' + str(today_str) + 'T00:00:00Z TO ' + str(today_str) + 'T23:59:59Z ]'
     params = {
-        'q': 'url:*chileautos* AND -vendido:*',
+        'q': 'id:ca_* -vendido:*',
         'fq': '-fecha_precio:' + date_str,
         'fl': 'id,url',
         'wt': 'json',
@@ -36,8 +36,8 @@ class UpdateChileautosSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         super(UpdateChileautosSpider, self).__init__(*args, **kwargs)
-        # service_solr = 'http://192.163.198.140:8983'
-        service_solr = 'http://localhost:8983'
+        service_solr = 'http://192.163.198.140:8983'
+        # service_solr = 'http://localhost:8983'
         solr_core = 'zoogle'
 
         self.post_command_str = 'curl "' + service_solr + '/solr/' + solr_core + '/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
