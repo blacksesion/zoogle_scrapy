@@ -45,8 +45,8 @@ class ZooglePipeline(object):
 
 class SolrPipeline(object):
     def __init__(self):
-        self.post_command_str = 'curl "http://192.163.198.140:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
-        # self.post_command_str = 'curl "http://localhost:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
+        # self.post_command_str = 'curl "http://192.163.198.140:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
+        self.post_command_str = 'curl "http://localhost:8983/solr/zoogle/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
         self.collection = '/solr/zoogle/update'
         self.counter = 0
         self.media_monitor_list = ['chileautos.cl', 'www.chileautos.cl', 'yapo.cl', 'www.yapo.cl', 'avender.cl', 'www.avender.cl', 'amotor.cl', 'www.amotor.cl']
@@ -112,8 +112,9 @@ class SolrPipeline(object):
                     precio = re.sub("\D", "", item['precio_det'])
                     item['precio'] = {'add': precio if precio is not '' else 0}
                     item['precio_hoy'] = {'set': precio if precio is not '' else 0}
-                item['precio_det'] = None
-                item['url'] = None
+                    item['precio_det'] = {'set': item['precio_det']}
+                #item['precio_det'] = None
+                #item['url'] = None
         if spider.name is not 'update-version':
             item['fecha_creacion'] = {'add': 'NOW'}
             item['fecha_precio'] = {'add': 'NOW'}

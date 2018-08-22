@@ -36,7 +36,7 @@ class UpdateChileautosSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         super(UpdateChileautosSpider, self).__init__(*args, **kwargs)
-        # service_solr = 'http://ec2-54-233-216-144.sa-east-1.compute.amazonaws.com:8983'
+        # service_solr = 'http://192.163.198.140:8983'
         service_solr = 'http://localhost:8983'
         solr_core = 'zoogle'
 
@@ -67,7 +67,7 @@ class UpdateChileautosSpider(scrapy.Spider):
                     url = url_item['url']
                     anuncio = ChileautosItem()
                     anuncio['id'] = anuncio_id
-                    anuncio['url'] = url
+                    # anuncio['url'] = url
                     yield scrapy.Request(url, callback=self.parse_anuncio, meta={'anuncio': anuncio})
 
     def parse_anuncio(self, response):
@@ -81,5 +81,5 @@ class UpdateChileautosSpider(scrapy.Spider):
             for field in fields:
                 anuncio['precio_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Precio"]/td/text()').extract()).strip()
-                anuncio['vendido'] = None
+                # anuncio['vendido'] = None
         yield anuncio

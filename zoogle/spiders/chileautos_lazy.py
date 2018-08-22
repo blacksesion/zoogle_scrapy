@@ -87,6 +87,7 @@ class ChileautosLazySpider(scrapy.Spider):
     def parse(self, response):
         hxs = scrapy.Selector(response)
         pages = hxs.xpath("//span[@class='control__label']/text()").extract()
+        print pages
         file_pages = re.sub("\D", "", pages[1])
         if file_pages is not "" and file_pages is not None:
             archivo = codecs.open("file_pages_chileautos.txt", 'w', encoding='utf-8')
