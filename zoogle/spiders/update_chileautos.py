@@ -7,7 +7,7 @@ import urllib
 import urllib2
 
 import scrapy
-from datetime import datetime
+from datetime import datetime, timedelta
 import demjson as demjson
 
 from zoogle.items import ChileautosItem
