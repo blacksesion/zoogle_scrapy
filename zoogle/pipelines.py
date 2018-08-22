@@ -116,9 +116,8 @@ class SolrPipeline(object):
                 #item['precio_det'] = None
                 #item['url'] = None
         if spider.name is not 'update-version':
-            if item['vendido'] is None:
-                item['fecha_creacion'] = {'add': 'NOW'}
-                item['fecha_precio'] = {'add': 'NOW'}
+            item['fecha_creacion'] = {'add': 'NOW'}
+            item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
         self.counter += 1
         filename = str(spider.name) + '_' + str(today) + '_' + str(self.counter) + '.json'
