@@ -98,8 +98,9 @@ class ChileautosLazySpider(scrapy.Spider):
         for item in thumbs:
             link = ''.join(item.xpath("a/@href").extract())
             clean_url = re.search('^(.*?)(?=\?|$)', link).group(0)
-            if clean_url in self.url_skip:
-                print "ignorada url: " + clean_url
+            full_clean_url = self.domain_url + clean_url
+            if full_clean_url in self.url_skip:
+                print "ignorada url: " + full_clean_url
             else:
                 if link is not None and link is not "":
                     request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
@@ -144,6 +145,9 @@ class ChileautosLazySpider(scrapy.Spider):
                     '//i[@class="zmdi zmdi-pin"]/following-sibling::text()[1]').extract()).strip()
                 anuncio['comentarios'] = ''.join(field.xpath(
                     '//div[@class="car-comments col-xs-12"]/p/text()').extract()).strip()
+                anuncio['img_url'] = ','.join(field.xpath(
+                    '//div[@class="item__image"]/div/@data-lazy-load-src').extract()).strip()
+                # print anuncio['img_url'], anuncio['id']
                 '''
                 Carga de detalles destacados
                 '''
