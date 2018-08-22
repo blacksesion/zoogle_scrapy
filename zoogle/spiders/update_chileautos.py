@@ -83,5 +83,5 @@ class UpdateChileautosSpider(scrapy.Spider):
             for field in fields:
                 anuncio['precio_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Precio"]/td/text()').extract()).strip()
-                # anuncio['vendido'] = None
+                anuncio['vendido'] = None
         yield anuncio
