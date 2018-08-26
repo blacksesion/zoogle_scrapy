@@ -174,6 +174,17 @@ class ChileautosItem(Item):
     contact_city = Field()
     contact_region = Field()
 
+    # EQUIPAMIENTO
+    eq_air_acon = Field()
+    eq_alzavid = Field()
+    eq_airbag = Field()
+    eq_cierre_cent = Field()
+    eq_llantas = Field()
+    eq_direccion = Field()
+    eq_techo = Field()
+    eq_puertas = Field()
+    eq_cilindrada = Field()
+
 
 
 class ZoogleItem(Item):
