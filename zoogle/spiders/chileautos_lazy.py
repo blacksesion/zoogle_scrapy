@@ -176,10 +176,42 @@ class ChileautosLazySpider(scrapy.Spider):
                 anuncio['region_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="' + unicode('Región',
                                                                                      'utf-8') + '"]/td/text()').extract()).strip()
+
                 anuncio['ciudad_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
-                anuncio['version_det'] = ''.join(field.xpath(
+                anuncio['version'] = ''.join(field.xpath(
                     '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                '''
+                Carga de Especificaciones Detalles
+                '''
+                anuncio['tipo_vehiculo_det'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Tipo Vehiculo', 'utf-8') + '"]/td/text()').extract()).strip()
+                anuncio['tipo_categoria_det'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Tipo Categoria', 'utf-8') + '"]/td/text()').extract()).strip()
+                anuncio['version_det'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                '''
+                Carga de Especificaciones Equipamiento
+                '''
+                anuncio['eq_air_acon'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Aire Acondicionado', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_alzavid'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Alzavidrios Electricos', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_airbag'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Airbag', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_cierre_cent'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Cierre Centralizado', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_llantas'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Llantas', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_direccion'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Dirección', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_techo'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Techo', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_puertas'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Puertas', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_cilindrada'] = ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Cilindrada', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+
                 pattern = re.compile(r'((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', re.MULTILINE | re.DOTALL)
                 data = field.xpath('//script[contains(., "fbq(\'track\', \'INFORMATION\',")]/text()').re(pattern)[0]
                 py_obj = demjson.decode(data)
@@ -194,6 +226,27 @@ class ChileautosLazySpider(scrapy.Spider):
 
                 '''
                 Carga de contacto
+                '''
+                seller_link = ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())
+                if seller_link is not None and seller_link is not "":
+                    anuncio['contact_seller_url'] = self.domain_url + seller_link
+                anuncio['contact_seller'] = ''.join(field.xpath(
+                    '//tr[td/text()="Vendedor"]/td[2]/a/text()').extract()).strip()
+                anuncio['contact_name'] = ''.join(field.xpath(
+                    '//tr[td/text()="Contacto"]/td[2]/text()').extract()).strip()
+                anuncio['contact_number'] = ', '.join(field.xpath(
+                    '//td[@id="phone"]/p/text()').extract()).strip()
+                anuncio['contact_address'] = ''.join(field.xpath(
+                    '//tr[td/text()="' + unicode('Dirección', 'utf-8') + '"]/td[2]/text()').extract()).strip()
+                anuncio['contact_comuna'] = ''.join(field.xpath(
+                    '//tr[td/text()="Comuna"]/td[2]/text()').extract()).strip()
+                anuncio['contact_city'] = ''.join(field.xpath(
+                    '//tr[td/text()="Ciudad"]/td[2]/text()').extract()).strip()
+                anuncio['contact_region'] = ''.join(field.xpath(
+                    '//tr[td/text()="' + unicode('Región', 'utf-8') + '"]/td[2]/text()').extract()).strip()
+
+                '''
+                Carga de equipamiento
                 '''
                 seller_link = ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())
                 if seller_link is not None and seller_link is not "":

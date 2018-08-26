@@ -84,4 +84,35 @@ class UpdateChileautosSpider(scrapy.Spider):
                 anuncio['precio_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Precio"]/td/text()').extract()).strip()
                 anuncio['vendido'] = None
+
+                '''
+                Carga de Especificaciones Detalles
+                '''
+                anuncio['tipo_vehiculo_det'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Tipo Vehiculo', 'utf-8') + '"]/td/text()').extract()).strip()}
+                anuncio['tipo_categoria_det'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Tipo Categoria', 'utf-8') + '"]/td/text()').extract()).strip()}
+                anuncio['version_det'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                '''
+                Carga de Especificaciones Equipamiento
+                '''
+                anuncio['eq_air_acon'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Aire Acondicionado', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_alzavid'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Alzavidrios Electricos', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_airbag'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Airbag', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_cierre_cent'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Cierre Centralizado', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_llantas'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Llantas', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_direccion'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Dirección', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_techo'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Techo', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_puertas'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Puertas', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_cilindrada'] = {'set': ''.join(field.xpath(
+                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Cilindrada', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
         yield anuncio
