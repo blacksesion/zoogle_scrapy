@@ -96,13 +96,6 @@ class UpdateChileautosSpider(scrapy.Spider):
                 '''
                 Carga de Especificaciones Equipamiento
                 '''
-                #print field.xpath('//table[@class="table table-condensed table-striped"]')
-                #print field.xpath('//table[@class="table table-condensed table-striped"]').extract()
-                print field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td/text()').extract()
-                print ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td/text()').extract())
-
-
-
                 anuncio['eq_air_acon'] = {'set': ''.join(field.xpath(
                     '//table[@class="table table-condensed table-striped"]/tr[th/text()="Aire Acondicionado"]/td/text()').extract()).strip()}
                 anuncio['eq_alzavid'] = {'set': ''.join(field.xpath(
