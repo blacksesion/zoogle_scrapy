@@ -88,32 +88,39 @@ class UpdateChileautosSpider(scrapy.Spider):
                 Carga de Especificaciones Detalles
                 '''
                 anuncio['tipo_vehiculo_det'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Tipo Vehiculo', 'utf-8') + '"]/td/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td/text()').extract()).strip()}
                 anuncio['tipo_categoria_det'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Tipo Categoria', 'utf-8') + '"]/td/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Categoria"]/td/text()').extract()).strip()}
                 anuncio['version_det'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td/text()').extract()).strip()}
                 '''
                 Carga de Especificaciones Equipamiento
                 '''
+                #print field.xpath('//table[@class="table table-condensed table-striped"]')
+                #print field.xpath('//table[@class="table table-condensed table-striped"]').extract()
+                print field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td/text()').extract()
+                print ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td/text()').extract())
+
+
+
                 anuncio['eq_air_acon'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Aire Acondicionado', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Aire Acondicionado"]/td/text()').extract()).strip()}
                 anuncio['eq_alzavid'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Alzavidrios Electricos', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Alzavidrios Electricos"]/td/text()').extract()).strip()}
                 anuncio['eq_airbag'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Airbag', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Airbag"]/td/text()').extract()).strip()}
                 anuncio['eq_cierre_cent'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Cierre Centralizado', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Cierre Centralizado"]/td/text()').extract()).strip()}
                 anuncio['eq_llantas'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Llantas', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Llantas"]/td/text()').extract()).strip()}
                 anuncio['eq_direccion'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Dirección', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="' + unicode('Dirección', 'utf-8') + '"]/td/text()').extract()).strip()}
                 anuncio['eq_techo'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Techo', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Techo"]/td/text()').extract()).strip()}
                 anuncio['eq_puertas'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Puertas', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Puertas"]/td/text()').extract()).strip()}
                 anuncio['eq_cilindrada'] = {'set': ''.join(field.xpath(
-                    '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Cilindrada', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Cilindrada"]/td/text()').extract()).strip()}
                 '''
                 Carga de contacto
                 '''
