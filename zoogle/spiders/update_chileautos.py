@@ -84,7 +84,6 @@ class UpdateChileautosSpider(scrapy.Spider):
                 anuncio['precio_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Precio"]/td/text()').extract()).strip()
                 anuncio['vendido'] = None
-
                 '''
                 Carga de Especificaciones Detalles
                 '''
@@ -115,4 +114,24 @@ class UpdateChileautosSpider(scrapy.Spider):
                     '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Puertas', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
                 anuncio['eq_cilindrada'] = {'set': ''.join(field.xpath(
                     '//div[@id="tab-content--specifications"]/table/tr[th/text()="' + unicode('Cilindrada', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                '''
+                Carga de contacto
+                '''
+                seller_link = {'set': ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())}
+                if seller_link is not None and seller_link is not "":
+                    anuncio['contact_seller_url'] = self.domain_url + seller_link
+                anuncio['contact_seller'] = {'set': ''.join(field.xpath(
+                    '//tr[td/text()="Vendedor"]/td[2]/a/text()').extract()).strip()}
+                anuncio['contact_name'] = {'set': ''.join(field.xpath(
+                    '//tr[td/text()="Contacto"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_number'] = {'set': ', '.join(field.xpath(
+                    '//td[@id="phone"]/p/text()').extract()).strip()}
+                anuncio['contact_address'] = {'set': ''.join(field.xpath(
+                    '//tr[td/text()="' + unicode('Dirección', 'utf-8') + '"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_comuna'] = {'set': ''.join(field.xpath(
+                    '//tr[td/text()="Comuna"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_city'] = {'set': ''.join(field.xpath(
+                    '//tr[td/text()="Ciudad"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_region'] = {'set': ''.join(field.xpath(
+                    '//tr[td/text()="' + unicode('Región', 'utf-8') + '"]/td[2]/text()').extract()).strip()}
         yield anuncio
