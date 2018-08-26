@@ -117,7 +117,7 @@ class UpdateChileautosSpider(scrapy.Spider):
                 '''
                 Carga de contacto
                 '''
-                seller_link = {'set': ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())}
+                seller_link = ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())
                 if seller_link is not None and seller_link is not "":
                     anuncio['contact_seller_url'] = self.base_url + seller_link
                 anuncio['contact_seller'] = {'set': ''.join(field.xpath(
