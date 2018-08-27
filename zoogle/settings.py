@@ -71,6 +71,7 @@ DB_HOST = "201.148.107.174"
 DB_USER = "zoogle_user"
 DB_PASSWD = "admin1234"
 DB_DBNAME = "zoogle"
+DB_DBNAME2 = "avender"
 
 DB_CONFIG = {
     'user': DB_USER,
