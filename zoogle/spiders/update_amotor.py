@@ -148,6 +148,7 @@ class UpdateAmotorSpider(scrapy.Spider):
         anuncio = ChileautosItem()
         anuncio['id'] = anuncio_id
         anuncio['idvehiculo_amotor'] = {'set': id_vehiculo}
+        anuncio['idvehiculo2_amotor'] = {'set': id_vehiculo}
         anuncio['patente_amotor'] = {'set': patente}
         anuncio['IdCategoria_amotor'] = {'set': id_categoria}
         anuncio['Categoria_amotor'] = {'set': categoria}

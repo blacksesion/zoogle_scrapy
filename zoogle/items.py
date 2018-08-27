@@ -187,6 +187,7 @@ class ChileautosItem(Item):
 
     #AMOTOR
     idvehiculo_amotor = Field()
+    idvehiculo2_amotor = Field()
     patente_amotor = Field()
     IdCategoria_amotor = Field()
     Categoria_amotor = Field()
