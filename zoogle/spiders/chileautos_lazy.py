@@ -185,9 +185,9 @@ class ChileautosLazySpider(scrapy.Spider):
                 Carga de Especificaciones Detalles
                 '''
                 anuncio['tipo_vehiculo_det'] = ''.join(field.xpath(
-                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td/text()').extract()).strip()
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td[1]/text()').extract()).strip()
                 anuncio['tipo_categoria_det'] = ''.join(field.xpath(
-                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Categoria"]/td/text()').extract()).strip()
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Categoria"]/td[1]/text()').extract()).strip()
                 anuncio['version_det'] = ''.join(field.xpath(
                     '//table[@class="table table-condensed table-striped"]/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()
                 '''
