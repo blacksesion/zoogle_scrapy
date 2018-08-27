@@ -30,7 +30,7 @@ class UpdateAmotorSpider(scrapy.Spider):
     today_str = today.strftime('%Y-%m-%d')
     date_str = '[' + str(today_str) + 'T00:00:00Z TO ' + str(today_str) + 'T23:59:59Z ]'
     params = {
-        'q': 'id:ca_* -vendido:*',
+        'q': 'id:ca_* -(vendido:* OR idvehiculo_amotor:*)',
         'fl': 'id,marca,modelo,ano,carroceria,contact_seller,tipo_categoria_det,transmision_det,combustible_det,color_exterior_det,eq_direccion,eq_techo,eq_cilindrada',
         'wt': 'json',
         'rows': '100',
