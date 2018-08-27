@@ -185,6 +185,24 @@ class ChileautosItem(Item):
     eq_puertas = Field()
     eq_cilindrada = Field()
 
+    #AMOTOR
+    idvehiculo_amotor = Field()
+    patente_amotor = Field()
+    IdCategoria_amotor = Field()
+    Categoria_amotor = Field()
+    Idsucursal_amotor = Field()
+    sucursal_amotor = Field()
+    Idmarca_amotor = Field()
+    Idmodelo_amotor = Field()
+    transmision_amotor = Field()
+    combustible_amotor = Field()
+    direccion_amotor = Field()
+    techo_amotor = Field()
+    cilindrada_amotor = Field()
+    color_amotor = Field()
+    segmento_amotor = Field()
+    tapiz_amotor = Field()
+
 
 
 class ZoogleItem(Item):

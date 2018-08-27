@@ -115,7 +115,7 @@ class SolrPipeline(object):
                     item['precio_det'] = {'set': item['precio_det']}
                 #item['precio_det'] = None
                 #item['url'] = None
-        if spider.name is not 'update-version':
+        if spider.name is not 'update-version' and spider.name is not 'update-amotor':
             item['fecha_creacion'] = {'add': 'NOW'}
             item['fecha_precio'] = {'add': 'NOW'}
         today = date.today()
