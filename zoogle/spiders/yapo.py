@@ -4,8 +4,11 @@ import codecs
 import json
 import re
 import sys
+import traceback
 import scrapy
 import datetime
+import urllib
+import urllib2
 import demjson as demjson
 from pathlib import Path
 from scrapy.exceptions import CloseSpider
@@ -21,14 +24,17 @@ class YapoSpider(scrapy.Spider):
     name = "yapo"
     allowed_domains = ["www.yapo.cl"]
     base_url = "https://www.yapo.cl/chile/autos?ca=15_s&st=s&cg=2020&o=%s"
+    solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
     pages_number = 6000
     start_page = 1
     item_x_page = 50
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
     total_item_path = Path("total_item_yapo.txt")
+    only_news = False  # default False
+    url_skip = set()
 
-    def __init__(self, init_page=None, deep=None, num_items=None, *args, **kwargs):
+    def __init__(self, init_page=None, deep=None, num_items=None, new=None, *args, **kwargs):
         super(YapoSpider, self).__init__(*args, **kwargs)
         total_item = None
         if init_page is not None:
@@ -41,10 +47,40 @@ class YapoSpider(scrapy.Spider):
             archivo = codecs.open("total_item_yapo.txt", 'r')
             total_item = archivo.read()
             archivo.close()
+        if new is not None:
+            self.only_news = True
         if total_item is not "" and total_item is not None:
             self.pages_number = int(int(total_item) / self.item_x_page)
         self.start_urls = [self.base_url % id for id in
                            xrange(self.start_page, self.pages_number)]
+        if self.only_news is True:
+            params = {'q': 'url:* AND id:yapo_* -vendido:*',
+                      'fl': 'url',
+                      'wt': 'json',
+                      'rows': '500000',
+                      'indent': 'false'}
+            params_encoded = urllib.urlencode(params)
+            request = urllib2.Request(self.solr_base_url % params_encoded)
+            try:
+                response = urllib2.urlopen(request)
+            except:
+                response = None
+                print 'params', params
+                print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+
+            if response is not None:
+                jeison = response.read()
+                data = json.loads(jeison)
+                print 'Resultados: ', data['response']['numFound']
+                data_json = data['response']['docs']
+                try:
+                    if len(data_json) > 0:
+                        self.url_skip.update(x['url'] for x in data_json)
+                        # print self.url_skip
+                    else:
+                        print "No hay resultados"
+                except:
+                    print "Error sending to WS:", traceback.format_exc()
 
     def parse(self, response):
         hxs = scrapy.Selector(response)
@@ -62,11 +98,14 @@ class YapoSpider(scrapy.Spider):
             price = ''.join(item.xpath("node()/span[@class='price']/text()").extract())
             if price is not None and price is not "":
                 link = ''.join(item.xpath("node()/a[@class='title']/@href").extract())
-                if link is not None and link is not "":
-                    request = scrapy.Request(link, callback=self.parse_thumb)
-                    yield request
+                if link in self.url_skip:
+                    print "ignorada url: " + link
                 else:
-                    print 'link no existe'
+                    if link is not None and link is not "":
+                        request = scrapy.Request(link, callback=self.parse_thumb)
+                        yield request
+                    else:
+                        print 'link no existe'
             else:
                 print 'anuncio sin precio'
 
