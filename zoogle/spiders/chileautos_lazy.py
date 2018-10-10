@@ -4,13 +4,13 @@ import codecs
 import json
 import re
 import sys
-
+import traceback
+import urllib
+import urllib2
 import demjson as demjson
 import scrapy
 import datetime
-
 from pathlib import Path
-
 from zoogle.items import ChileautosItem
 from scrapy.exceptions import CloseSpider
 
@@ -23,32 +23,69 @@ class ChileautosLazySpider(scrapy.Spider):
     allowed_domains = ["www.chileautos.cl"]
     domain_url = "https://www.chileautos.cl"
     base_url = "https://www.chileautos.cl/autos/busqueda?s=%s&l=%s"
-    pages_number = 1500
+    solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
+    pages_limit = 15000
     start_page = 1
     item_x_page = 60
+    only_news = False  # default False
+    url_skip = set()
     date = str(datetime.date.today())
     utc_date = date + 'T03:00:00Z'
     file_pages_path = Path("file_pages_chileautos.txt")
 
-    def __init__(self, init_page=None, deep=None, num_items=None, *args, **kwargs):
+    def __init__(self, page=None, deep=None, items=None, new=None, *args, **kwargs):
         super(ChileautosLazySpider, self).__init__(*args, **kwargs)
         file_pages = None
-        if init_page is not None:
-            self.start_page = int(init_page)
+        if page is not None:
+            self.start_page = int(page)
         if deep is not None:
-            self.pages_number = int(deep)
-        if num_items is not None:
-            self.item_x_page = int(num_items)
+            self.pages_limit = int(deep)
+        if items is not None:
+            self.item_x_page = int(items)
+        if new is not None:
+            self.only_news = True
         if self.file_pages_path.is_file():
             archivo = codecs.open("file_pages_chileautos.txt", 'r')
             file_pages = archivo.read()
             archivo.close()
-        if file_pages is not "" and file_pages is not None:
-            self.pages_number = int(file_pages)
-        self.start_urls = [self.base_url % (page, self.item_x_page) for page in
-                           xrange(self.start_page * self.item_x_page, self.pages_number * self.item_x_page, self.item_x_page)]
+        if file_pages is not "" and file_pages is not None and deep is None:
+            self.pages_limit = int(file_pages)
+        initial_item = self.start_page * self.item_x_page
+        end_item = initial_item + (self.pages_limit * self.item_x_page)
+        self.start_urls = [self.base_url % (page, self.item_x_page) for page in xrange(initial_item, end_item, self.item_x_page)]
+        if self.only_news is True:
+            params = {'q': 'url:* AND id:ca_* -vendido:*',
+                      # 'fq': 'date:' + date_str,
+                      'fl': 'url',
+                      'wt': 'json',
+                      # 'rows': '50',
+                      'rows': '100000',
+                      'indent': 'false'}
+            params_encoded = urllib.urlencode(params)
+            request = urllib2.Request(self.solr_base_url % params_encoded)
+            try:
+                response = urllib2.urlopen(request)
+            except:
+                response = None
+                print 'params', params
+                print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+
+            if response is not None:
+                jeison = response.read()
+                data = json.loads(jeison)
+                print 'Resultados: ', data['response']['numFound']
+                data_json = data['response']['docs']
+                try:
+                    if len(data_json) > 0:
+                        self.url_skip.update(re.search('^(.*?)(?=\?|$)', x['url']).group(0) for x in data_json)
+                        # print self.url_skip
+                    else:
+                        print "No hay resultados"
+                except:
+                    print "Error sending to WS:", traceback.format_exc()
 
     def parse(self, response):
+        #print response
         hxs = scrapy.Selector(response)
         pages = hxs.xpath("//span[@class='control__label']/text()").extract()
         file_pages = re.sub("\D", "", pages[1])
@@ -61,26 +98,32 @@ class ChileautosLazySpider(scrapy.Spider):
             self.quit()
         for item in thumbs:
             link = ''.join(item.xpath("a/@href").extract())
-            if link is not None and link is not "":
-                request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
-                yield request
+            clean_url = re.search('^(.*?)(?=\?|$)', link).group(0)
+            full_clean_url = self.domain_url + clean_url
+            if full_clean_url in self.url_skip:
+                print "ignorada url: " + full_clean_url
             else:
-                print "Link no existe\n"
+                if link is not None and link is not "":
+                    request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
+                    yield request
+                else:
+                    print "Link no existe\n"
 
     def parse_thumb(self, response):
         hxs = scrapy.Selector(response)
         url = response.url
+        clean_url = re.search('^(.*?)(?=\?|$)', response.url).group(0)
         car_id = re.sub("\?", "", re.search("(\d+)\?", url).group(0))
-
-        self.log('url: %s' % url)
+        self.log('url: %s' % clean_url)
         fields = hxs.xpath("//div[@class='l-content__details-main col-xs-12 col-sm-8']")
 
         anuncio = ChileautosItem()
         if not fields:
-            # anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
-            anuncio['id'] = "ca_" + car_id
-            anuncio['url'] = url
-            anuncio['vendido'] = {'add': 'NOW'}
+            #anuncio['id'] = "ca_" + car_id
+            #anuncio['url'] = clean_url
+            #anuncio['vendido'] = {'add': 'NOW'}
+            self.log('Anuncio vacio: %s' % clean_url)
+            print fields
         else:
             for field in fields:
                 '''
@@ -89,7 +132,7 @@ class ChileautosLazySpider(scrapy.Spider):
                 anuncio['vendido'] = None
                 # anuncio['id'] = "ca_" + url.replace("https://www.chileautos.cl/auto/usado/details/CL-AD-", "")
                 anuncio['id'] = "ca_" + car_id
-                anuncio['url'] = url
+                anuncio['url'] = clean_url
                 anuncio['header_nombre'] = ''.join(field.xpath('h1/text()').extract()).strip()
                 anuncio['fecha_publicacion'] = {'add': ''.join(
                     field.xpath('//div[@class="published-date"]/span/text()').extract()).strip()}
@@ -105,6 +148,9 @@ class ChileautosLazySpider(scrapy.Spider):
                     '//i[@class="zmdi zmdi-pin"]/following-sibling::text()[1]').extract()).strip()
                 anuncio['comentarios'] = ''.join(field.xpath(
                     '//div[@class="car-comments col-xs-12"]/p/text()').extract()).strip()
+                anuncio['img_url'] = ','.join(field.xpath(
+                    '//div[@class="item__image"]/div/@data-lazy-load-src').extract()).strip()
+                # print anuncio['img_url'], anuncio['id']
                 '''
                 Carga de detalles destacados
                 '''
@@ -131,10 +177,42 @@ class ChileautosLazySpider(scrapy.Spider):
                 anuncio['region_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="' + unicode('Región',
                                                                                      'utf-8') + '"]/td/text()').extract()).strip()
+
                 anuncio['ciudad_det'] = ''.join(field.xpath(
                     '//div[@id="tab-content--basic"]/table/tr[th/text()="Ciudad"]/td/text()').extract()).strip()
-                anuncio['version_det'] = ''.join(field.xpath(
+                anuncio['version'] = ''.join(field.xpath(
                     '//table/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                '''
+                Carga de Especificaciones Detalles
+                '''
+                anuncio['tipo_vehiculo_det'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td[1]/text()').extract()).strip()
+                anuncio['tipo_categoria_det'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Categoria"]/td[1]/text()').extract()).strip()
+                anuncio['version_det'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                '''
+                Carga de Especificaciones Equipamiento
+                '''
+                anuncio['eq_air_acon'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Aire Acondicionado"]/td[1]/text()').extract()).strip()
+                anuncio['eq_alzavid'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Alzavidrios Electricos"]/td[1]/text()').extract()).strip()
+                anuncio['eq_airbag'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Airbag"]/td[1]/text()').extract()).strip()
+                anuncio['eq_cierre_cent'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Cierre Centralizado"]/td[1]/text()').extract()).strip()
+                anuncio['eq_llantas'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Llantas"]/td[1]/text()').extract()).strip()
+                anuncio['eq_direccion'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="' + unicode('Dirección', 'utf-8') + '"]/td[1]/text()').extract()).strip()
+                anuncio['eq_techo'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Techo"]/td[1]/text()').extract()).strip()
+                anuncio['eq_puertas'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Puertas"]/td[1]/text()').extract()).strip()
+                anuncio['eq_cilindrada'] = ''.join(field.xpath(
+                    '//table[@class="table table-condensed table-striped"]/tr[th/text()="Cilindrada"]/td[1]/text()').extract()).strip()
+
                 pattern = re.compile(r'((?=\[)\[[^]]*\]|(?=\{)\{[^\}]*\}|\"[^"]*\")', re.MULTILINE | re.DOTALL)
                 data = field.xpath('//script[contains(., "fbq(\'track\', \'INFORMATION\',")]/text()').re(pattern)[0]
                 py_obj = demjson.decode(data)
@@ -150,10 +228,11 @@ class ChileautosLazySpider(scrapy.Spider):
                 '''
                 Carga de contacto
                 '''
+                seller_link = ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())
+                if seller_link is not None and seller_link is not "":
+                    anuncio['contact_seller_url'] = self.domain_url + seller_link
                 anuncio['contact_seller'] = ''.join(field.xpath(
                     '//tr[td/text()="Vendedor"]/td[2]/a/text()').extract()).strip()
-                seller_link = ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())
-                anuncio['contact_seller_url'] = self.domain_url + seller_link
                 anuncio['contact_name'] = ''.join(field.xpath(
                     '//tr[td/text()="Contacto"]/td[2]/text()').extract()).strip()
                 anuncio['contact_number'] = ', '.join(field.xpath(
@@ -166,8 +245,7 @@ class ChileautosLazySpider(scrapy.Spider):
                     '//tr[td/text()="Ciudad"]/td[2]/text()').extract()).strip()
                 anuncio['contact_region'] = ''.join(field.xpath(
                     '//tr[td/text()="' + unicode('Región', 'utf-8') + '"]/td[2]/text()').extract()).strip()
-
-        yield anuncio
+            yield anuncio
 
     def quit(self):
         raise CloseSpider('No hay mas anuncios.')

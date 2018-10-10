@@ -7,7 +7,7 @@ import urllib
 import urllib2
 
 import scrapy
-from datetime import datetime
+from datetime import datetime, timedelta
 import demjson as demjson
 
 from zoogle.items import ChileautosItem
@@ -22,11 +22,13 @@ class UpdateChileautosSpider(scrapy.Spider):
     allowed_domains = ["www.chileautos.cl"]
     base_url = "https://www.chileautos.cl"
     start_urls = ['http://www.chileautos.cl']
+    yesterday = (datetime.now() - timedelta(1))
     today = (datetime.now())
     today_str = today.strftime('%Y-%m-%d')
-    date_str = '[' + str(today_str) + 'T00:00:00Z TO ' + str(today_str) + 'T23:59:59Z ]'
+    yesterday_str = yesterday.strftime('%Y-%m-%d')
+    date_str = '[' + str(yesterday_str) + 'T00:00:00Z TO ' + str(today_str) + 'T23:59:59Z ]'
     params = {
-        'q': 'url:*chileautos* AND -vendido:*',
+        'q': 'id:ca_* AND url:* -vendido:*',
         'fq': '-fecha_precio:' + date_str,
         'fl': 'id,url',
         'wt': 'json',
@@ -36,7 +38,7 @@ class UpdateChileautosSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         super(UpdateChileautosSpider, self).__init__(*args, **kwargs)
-        # service_solr = 'http://ec2-54-233-216-144.sa-east-1.compute.amazonaws.com:8983'
+        # service_solr = 'http://192.163.198.140:8983'
         service_solr = 'http://localhost:8983'
         solr_core = 'zoogle'
 
@@ -67,7 +69,7 @@ class UpdateChileautosSpider(scrapy.Spider):
                     url = url_item['url']
                     anuncio = ChileautosItem()
                     anuncio['id'] = anuncio_id
-                    anuncio['url'] = url
+                    # anuncio['url'] = url
                     yield scrapy.Request(url, callback=self.parse_anuncio, meta={'anuncio': anuncio})
 
     def parse_anuncio(self, response):
@@ -79,7 +81,37 @@ class UpdateChileautosSpider(scrapy.Spider):
             anuncio['vendido'] = {'add': 'NOW'}
         else:
             for field in fields:
-                anuncio['precio_det'] = ''.join(field.xpath(
-                    '//div[@id="tab-content--basic"]/table/tr[th/text()="Precio"]/td/text()').extract()).strip()
+                anuncio['precio_det'] = ''.join(field.xpath('//div[@id="tab-content--basic"]/table/tr[th/text()="Precio"]/td/text()').extract()).strip()
                 anuncio['vendido'] = None
+                '''
+                Carga de Especificaciones Detalles
+                '''
+                anuncio['tipo_vehiculo_det'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Vehiculo"]/td[1]/text()').extract()).strip()}
+                anuncio['tipo_categoria_det'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Tipo Categoria"]/td[1]/text()').extract()).strip()}
+                anuncio['version_det'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="' + unicode('Versión', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                '''
+                Carga de Especificaciones Equipamiento
+                '''
+                anuncio['eq_air_acon'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Aire Acondicionado"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_alzavid'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Alzavidrios Electricos"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_airbag'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Airbag"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_cierre_cent'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Cierre Centralizado"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_llantas'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Llantas"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_direccion'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="' + unicode('Dirección', 'utf-8') + '"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_techo'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Techo"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_puertas'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Puertas"]/td[1]/text()').extract()).strip()}
+                anuncio['eq_cilindrada'] = {'set': ''.join(field.xpath('//table[@class="table table-condensed table-striped"]/tr[th/text()="Cilindrada"]/td[1]/text()').extract()).strip()}
+                '''
+                Carga de contacto
+                '''
+                seller_link = ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/@href').extract())
+                if seller_link is not None and seller_link is not "":
+                    anuncio['contact_seller_url'] = self.base_url + seller_link
+                anuncio['contact_seller'] = {'set': ''.join(field.xpath('//tr[td/text()="Vendedor"]/td[2]/a/text()').extract()).strip()}
+                anuncio['contact_name'] = {'set': ''.join(field.xpath('//tr[td/text()="Contacto"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_number'] = {'set': ', '.join(field.xpath('//td[@id="phone"]/p/text()').extract()).strip()}
+                anuncio['contact_address'] = {'set': ''.join(field.xpath('//tr[td/text()="' + unicode('Dirección', 'utf-8') + '"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_comuna'] = {'set': ''.join(field.xpath('//tr[td/text()="Comuna"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_city'] = {'set': ''.join(field.xpath('//tr[td/text()="Ciudad"]/td[2]/text()').extract()).strip()}
+                anuncio['contact_region'] = {'set': ''.join(field.xpath('//tr[td/text()="' + unicode('Región', 'utf-8') + '"]/td[2]/text()').extract()).strip()}
         yield anuncio

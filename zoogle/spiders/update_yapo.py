@@ -86,5 +86,5 @@ class UpdateYapoSpider(scrapy.Spider):
                 decoded = json.loads(data_obj)
                 if "price" in decoded:
                     anuncio['precio_det'] = decoded["price"]
-                anuncio['vendido'] = None
+                # anuncio['vendido'] = None
         yield anuncio

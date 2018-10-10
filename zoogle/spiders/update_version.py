@@ -11,7 +11,7 @@ from zoogle.items import ChileautosItem
 from mysql import connector
 from zoogle.settings import DB_CONFIG
 from scrapy import signals
-from scrapy.xlib.pydispatch import dispatcher
+from pydispatch import dispatcher
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -37,12 +37,16 @@ class UpdateVersionSpider(scrapy.Spider):
 
     url_api_rest = ""
     cnx = None
+    cnx2 = None
+    update_amotor=False
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, amotor=None, *args, **kwargs):
         super(UpdateVersionSpider, self).__init__(*args, **kwargs)
         dispatcher.connect(self.spider_closed, signals.spider_closed)
-        # service_solr = 'http://201.148.107.174:8983'
-        service_solr = 'http://localhost:8983'
+        if amotor is not None:
+            self.update_amotor = True
+        service_solr = 'http://192.163.198.140:8983'
+        # service_solr = 'http://localhost:8983'
         solr_core = 'zoogle'
 
         self.post_command_str = 'curl "' + service_solr + '/solr/' + solr_core + '/update?commit=true" --data-binary @%s -H "Content-type:application/json"'
@@ -51,6 +55,7 @@ class UpdateVersionSpider(scrapy.Spider):
         self.solr_url = self.base_url + self.collection
         # self.cnx = connector.connect(**DB_CONFIG)
         self.cnx = zoogle.MysqlConnector.get_connection()
+        self.cnx2 = zoogle.MysqlConnector2.get_connection()
 
     def spider_closed(self, spider):
         self.cnx.close()

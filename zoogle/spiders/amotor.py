@@ -8,7 +8,7 @@ import scrapy
 import datetime
 import demjson as demjson
 from pathlib import Path
-from scrapy.contrib.spiders import XMLFeedSpider
+from scrapy.spiders import XMLFeedSpider
 from scrapy.exceptions import CloseSpider
 from scrapy.selector import XmlXPathSelector
 
