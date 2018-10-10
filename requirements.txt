@@ -1,1 +1,2 @@
 demjson==2.2.4
+pathlib==1.0.1
