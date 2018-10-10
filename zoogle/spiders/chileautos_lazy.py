@@ -85,6 +85,7 @@ class ChileautosLazySpider(scrapy.Spider):
                     print "Error sending to WS:", traceback.format_exc()
 
     def parse(self, response):
+        #print response
         hxs = scrapy.Selector(response)
         pages = hxs.xpath("//span[@class='control__label']/text()").extract()
         file_pages = re.sub("\D", "", pages[1])

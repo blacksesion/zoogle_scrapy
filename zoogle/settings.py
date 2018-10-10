@@ -54,9 +54,9 @@ DOWNLOADER_MIDDLEWARES = {
 #    'zoogle.middlewares.IgnoreDuplicates': 100
 }
 
-CONCURRENT_REQUESTS = 60
-CONCURRENT_REQUESTS_PER_DOMAIN = 180
-#DOWNLOAD_DELAY = 1.5
+#CONCURRENT_REQUESTS = 60
+#CONCURRENT_REQUESTS_PER_DOMAIN = 180
+DOWNLOAD_DELAY = 0.25
 
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
@@ -66,10 +66,12 @@ NEWSPIDER_MODULE = 'zoogle.spiders'
 #LOG_ENCODING = 'utf-8'
 ITEM_PIPELINES = {'zoogle.pipelines.SolrPipeline': 700}
 
-# DB_HOST = "localhost"
-DB_HOST = "201.148.107.174"
-DB_USER = "zoogle_user"
+DB_HOST = "localhost"
+# DB_HOST = "201.148.107.174"
+DB_USER = "root"
+#DB_USER = "zoogle_user"
 DB_PASSWD = "admin1234"
+#DB_PASSWD = "admin1234"
 DB_DBNAME = "zoogle"
 DB_DBNAME2 = "avender"
 
@@ -82,10 +84,10 @@ DB_CONFIG = {
     'use_pure': False,
 }
 
-TOR_PROXY = True
+TOR_PROXY = False
 
 PROXY_POOL = [
-    'https://164.77.182.34:80'
+    'https://190.160.226.53:59147'
 ]
 
 HTTP_PROXY = 'http://127.0.0.1:8118'

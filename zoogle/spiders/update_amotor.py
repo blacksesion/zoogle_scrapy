@@ -30,7 +30,7 @@ class UpdateAmotorSpider(scrapy.Spider):
     today_str = today.strftime('%Y-%m-%d')
     date_str = '[' + str(today_str) + 'T00:00:00Z TO ' + str(today_str) + 'T23:59:59Z ]'
     params = {
-        'q': 'id:ca_* -(vendido:* OR idvehiculo_amotor:*)',
+        'q': 'id:ca_* -(vendido:* OR idvehiculo2_amotor:*)',
         'fl': 'id,marca,modelo,ano,carroceria,contact_seller,tipo_categoria_det,transmision_det,combustible_det,color_exterior_det,eq_direccion,eq_techo,eq_cilindrada',
         'wt': 'json',
         'rows': '100',
@@ -42,8 +42,8 @@ class UpdateAmotorSpider(scrapy.Spider):
 
     url_api_rest = ""
     cnx = None
-    # solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
-    solr_base_url = 'http://localhost:8983/solr/zoogle/select?%s'
+    solr_base_url = 'http://192.163.198.140:8983/solr/zoogle/select?%s'
+    # solr_base_url = 'http://localhost:8983/solr/zoogle/select?%s'
 
     def __init__(self, *args, **kwargs):
         super(UpdateAmotorSpider, self).__init__(*args, **kwargs)

@@ -14,7 +14,7 @@ from scrapy.conf import settings
 from toripchanger import TorIpChanger
 
 # A Tor IP will be reused only after 10 different IPs were used.
-ip_changer = TorIpChanger(reuse_threshold=100)
+ip_changer = TorIpChanger(reuse_threshold=10)
 
 
 class RandomUserAgentMiddleware(object):
@@ -27,7 +27,7 @@ class RandomUserAgentMiddleware(object):
 class ProxyMiddleware(object):
     # overwrite process request
     _requests_count = 0
-    _requests_count_x_ip = 100
+    _requests_count_x_ip = 10
 
     def process_request(self, request, spider):
         if spider.name == 'chileautos-lazy':
