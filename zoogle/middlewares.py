@@ -11,10 +11,10 @@ import urllib2
 import sys
 from scrapy.exceptions import IgnoreRequest
 from scrapy.conf import settings
-from toripchanger import TorIpChanger
+# from toripchanger import TorIpChanger
 
 # A Tor IP will be reused only after 10 different IPs were used.
-ip_changer = TorIpChanger(reuse_threshold=10)
+# ip_changer = TorIpChanger(reuse_threshold=10)
 
 
 class RandomUserAgentMiddleware(object):
@@ -36,8 +36,8 @@ class ProxyMiddleware(object):
                 self._requests_count += 1
                 if self._requests_count > self._requests_count_x_ip:
                     self._requests_count = 0
-                    ip_changer.get_new_ip()
-                    print ip_changer.get_current_ip()
+                    # ip_changer.get_new_ip()
+                    # print ip_changer.get_current_ip()
                 request.meta['proxy'] = settings.get('HTTP_PROXY')
             else:
                 # configuracion para pool de proxys
