@@ -104,7 +104,7 @@ class ChileautosLazySpider(scrapy.Spider):
                 print "ignorada url: " + full_clean_url
             else:
                 if link is not None and link is not "":
-                    request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb)
+                    request = scrapy.Request(self.domain_url + link, callback=self.parse_thumb, meta={'dont_merge_cookies': True})
                     yield request
                 else:
                     print "Link no existe\n"
@@ -115,6 +115,7 @@ class ChileautosLazySpider(scrapy.Spider):
         clean_url = re.search('^(.*?)(?=\?|$)', response.url).group(0)
         car_id = re.sub("\?", "", re.search("(\d+)\?", url).group(0))
         self.log('url: %s' % clean_url)
+        #print hxs.select("//body").extract()
         fields = hxs.xpath("//div[@class='l-content__details-main col-xs-12 col-sm-8']")
 
         anuncio = ChileautosItem()
