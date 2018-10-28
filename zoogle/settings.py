@@ -66,13 +66,10 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 210,
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
     'scrapy_crawlera.CrawleraMiddleware': 610,
-    #    'zoogle.middlewares.ProxyMiddleware': 200,
-    #    'zoogle.middlewares.IgnoreDuplicates': 100
 }
 
-CONCURRENT_REQUESTS = 60
-# CONCURRENT_REQUESTS_PER_DOMAIN = 180
-DOWNLOAD_DELAY = 0.25
+CONCURRENT_REQUESTS = 5
+DOWNLOAD_DELAY = 2.5
 
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
