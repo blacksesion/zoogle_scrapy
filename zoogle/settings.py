@@ -65,13 +65,14 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.spidermiddlewares.referer.RefererMiddleware': True,
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 210,
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
+    'scrapy_crawlera.CrawleraMiddleware': 610,
     #    'zoogle.middlewares.ProxyMiddleware': 200,
     #    'zoogle.middlewares.IgnoreDuplicates': 100
 }
 
-CONCURRENT_REQUESTS = 1
+CONCURRENT_REQUESTS = 60
 # CONCURRENT_REQUESTS_PER_DOMAIN = 180
-DOWNLOAD_DELAY = 5
+DOWNLOAD_DELAY = 0.25
 
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
@@ -106,6 +107,8 @@ PROXY_POOL = [
 ]
 
 HTTP_PROXY = 'http://127.0.0.1:8118'
-ROBOTSTXT_OBEY = True
-AUTOTHROTTLE_ENABLED = True
-HTTPCACHE_ENABLED = True
+ROBOTSTXT_OBEY = False
+AUTOTHROTTLE_ENABLED = False
+HTTPCACHE_ENABLED = False
+
+CRAWLERA_API_KEY = '23ffd63b3e1348eda2e002c5d1d7cbee'

@@ -11,6 +11,8 @@ import demjson as demjson
 import scrapy
 import datetime
 from pathlib import Path
+
+from zoogle import settings
 from zoogle.items import ChileautosItem
 from scrapy.exceptions import CloseSpider
 
@@ -19,6 +21,9 @@ sys.setdefaultencoding('utf-8')
 
 
 class ChileautosLazySpider(scrapy.Spider):
+    # crawlera settings
+    crawlera_enabled = True
+    crawlera_apikey = settings.CRAWLERA_API_KEY
     name = "chileautos-lazy"
     allowed_domains = ["www.chileautos.cl"]
     domain_url = "https://www.chileautos.cl"
