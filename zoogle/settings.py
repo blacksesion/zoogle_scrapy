@@ -67,8 +67,8 @@ DOWNLOADER_MIDDLEWARES = {
     # 'scrapy_crawlera.CrawleraMiddleware': 610,
 }
 
-CONCURRENT_REQUESTS = 5
-DOWNLOAD_DELAY = 2.5
+CONCURRENT_REQUESTS = 10
+DOWNLOAD_DELAY = 0.5
 
 SPIDER_MODULES = ['zoogle.spiders']
 NEWSPIDER_MODULE = 'zoogle.spiders'
