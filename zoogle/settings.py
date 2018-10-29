@@ -10,7 +10,7 @@
 #
 import datetime
 
-BOT_NAME = 'Boot :D'
+BOT_NAME = 'No me bloquees :D'
 COOKIES_ENABLED = True
 
 HTTPERROR_ALLOW_ALL = True
@@ -58,14 +58,13 @@ USER_AGENT_LIST = [
 ]
 
 DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.CustomClientContextFactory.CustomClientContextFactory'
-# DOWNLOADER_CLIENTCONTEXTFACTORY = 'zoogle.contextfactory.ScrapyClientContextFactory'
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy.spidermiddlewares.referer.RefererMiddleware': True,
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 210,
     'zoogle.middlewares.RandomUserAgentMiddleware': 400,
-    'scrapy_crawlera.CrawleraMiddleware': 610,
+    # 'scrapy_crawlera.CrawleraMiddleware': 610,
 }
 
 CONCURRENT_REQUESTS = 5
@@ -104,8 +103,8 @@ PROXY_POOL = [
 ]
 
 HTTP_PROXY = 'http://127.0.0.1:8118'
-ROBOTSTXT_OBEY = False
-AUTOTHROTTLE_ENABLED = False
+ROBOTSTXT_OBEY = True
+AUTOTHROTTLE_ENABLED = True
 HTTPCACHE_ENABLED = False
 
 CRAWLERA_API_KEY = '23ffd63b3e1348eda2e002c5d1d7cbee'
